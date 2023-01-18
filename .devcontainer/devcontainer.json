@@ -1,45 +1,33 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/postgres
 {
-	"name": "Deno",
- 	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			"VARIANT": "bullseye"
-		}
-	},
-	"settings": {
-		"deno.enable": true,
-		"deno.unstable": true,
-		"deno.lint": true,
-		"deno.importMap": "deno.json",
-		"deno.config": "deno.json",
-		"editor.defaultFormatter": "denoland.vscode-deno"
-	},
-	"extensions": [
-		"denoland.vscode-deno"
-	],
-	"remoteUser": "vscode",
+	"name": "Python 3 & PostgreSQL",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
 		"desktop-lite": {
 			"password": "vscode",
 			"webPort": "6080",
 			"vncPort": "5901"
 		}
-	},
-	"runArgs": ["--init", "--shm-size=1g"],
-	"forwardPorts": [6080, 5901],
-	"overrideCommand": false,
-	"portsAttributes": {
-		"3000": {
-			"label": "VERCEL"
-		},
-		"4507": {
-			"label": "HTTP SERVER"
-		},
-		"5901": {
-			"label": "VNC"
-		},
-		"6080": {
-			"label": "WEB VNC"
-		}
+	,
+		"ghcr.io/devcontainers/features/python:1": {}
 	}
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// This can be used to network with other containers or the host.
+	// "forwardPorts": [5000, 5432],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "pip install --user -r requirements.txt",
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
 }
