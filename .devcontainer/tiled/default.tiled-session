@@ -1,10 +1,10 @@
 {
-    "activeFile": "/workspaces/gracidea/maps/hoenn/hoenn-route-101.tmx",
+    "activeFile": "/workspaces/PyBall/main.py",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
-        "/workspaces/gracidea/maps/hoenn/hoenn-route-101.tmx": {
+        "/workspaces/PyBall/main.py": {
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
@@ -13,14 +13,12 @@
             }
         }
     },
-    "loadedWorlds": [
-        "/workspaces/gracidea/maps/gracidea.world"
-    ],
+    
     "openFiles": [
-        "/workspaces/gracidea/maps/hoenn/hoenn-route-101.tmx"
+        "/workspaces/PyBall/main.py"
     ],
     "project": "",
     "recentFiles": [
-        "/workspaces/gracidea/maps/hoenn/hoenn-route-101.tmx"
+        "/workspaces/PyBall/main.py"
     ]
 }
