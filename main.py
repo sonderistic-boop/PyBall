@@ -1,14 +1,14 @@
 import pygame as pg
 import math
-import twisted
-import numpy as np
+#import twisted
+#import numpy as np
 
 
 from entities.pawn import Pawn
 pg.init() # initialises pg
 
 
-colours = {
+themeColours = {
     "red" : "#d14242",
     "green" : "#52d142",
     "blue" : "#52d142",
@@ -25,14 +25,14 @@ screen = pg.display.set_mode((WIDTH,HEIGHT)) # width, height
 pg.display.set_caption("PyBall")
 
 
-field = pg.image.load("assets/fieldtile.jpg")
+field = pg.image.load("./assets/fieldtiles/fieldtile.jpg")
 
 clock = pg.time.Clock()
 
 def runtime():
     
     running = True
-    newguy = Pawn(screen,"blue","bigboyo",True,(90,90))
+    newguy = Pawn("bigboyo","blue",True,screen,(90,90))
     while running:
        
         clock.tick(maxTicks)
@@ -44,7 +44,7 @@ def runtime():
                 #case...
                     
       
-        screen.fill((colours["green"]))
+        screen.fill((themeColours["green"]))
         screen.blit(field,(20,20))
         newguy.render()
         pg.display.flip()
