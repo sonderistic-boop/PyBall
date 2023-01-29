@@ -2,12 +2,16 @@ import pygame as pg
 import math
 #import twisted
 #import numpy as np
-import sys
+
+import sys # for sys.exit()
 
 
 from entities.pawn import Pawn
+from entities.ball import Ball
+
 pg.init() # initialises pg
 
+#the colours used in the game
 
 themeColours = {
     "red" : "#d14242",
@@ -19,26 +23,33 @@ themeColours = {
     "orange" : "#e69138"
 
 }
-
+#the maximum number of ticks per second
 maxTicks = 60
 
 screen = pg.display.set_mode((1200,600),pg.SRCALPHA) # width, height
 pg.display.set_caption("PyBall")
 
 
+#need to set up a stadium class for future stadiums
 field = pg.image.load("./assets/tiles/fieldtiles/fieldtile.jpg")
 
+#the clock object
 clock = pg.time.Clock()
 
 def runtime():
-    
+    #the main function
     running = True
-    newguy = Pawn("bigboyo","red",True,screen,(200,220),(50,50))
+    newball = Ball(screen,(200,200),(20,20))
+    newguy = Pawn("bigboyo","red",True,screen,(400,400),(50,50))
+    guygroup =  (pg.sprite.GroupSingle(newguy))
+    ballgroup = (pg.sprite.GroupSingle(newball))
     while running:
+        #while running is true, the game will run
        
         clock.tick(maxTicks)
 
         for event in pg.event.get():
+            #event handling loop
             match event.type:
                 case pg.QUIT:
                     pg.quit()
@@ -47,14 +58,21 @@ def runtime():
 
                 
         keys = pg.key.get_pressed()
-        newguy.x += (keys[pg.K_RIGHT] - keys[pg.K_LEFT]) * 1
-        newguy.y += (keys[pg.K_DOWN] - keys[pg.K_UP]) * 1
-                    
+        newguy.vel[0] += (keys[pg.K_RIGHT] - keys[pg.K_LEFT]) * 0.5
+        newguy.vel[1] += (keys[pg.K_DOWN] - keys[pg.K_UP]) * 0.5
+        
+        collide = pg.sprite.spritecollide(newball, guygroup, False, pg.sprite.collide_mask)
+        
       
         screen.fill((themeColours["green"]))
+        screen.fill((255, 0, 0) if collide else (255, 255, 255))
+        
         #screen.blit(field,(20,20))
-        pg.draw.circle(screen,themeColours["yellow"],(200,200),100)
+        #pg.draw.circle(screen,themeColours["yellow"],(200,200),100)
+        newguy.updatePhysics()
+        newball.render()
         newguy.render()
+        print(newguy.vel)
         pg.display.flip()
        
 
