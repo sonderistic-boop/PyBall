@@ -2,6 +2,7 @@ import pygame as pg
 import math
 #import twisted
 #import numpy as np
+import sys
 
 
 from entities.pawn import Pawn
@@ -20,8 +21,8 @@ themeColours = {
 }
 
 maxTicks = 60
-(WIDTH,HEIGHT) = (1200,600)
-screen = pg.display.set_mode((WIDTH,HEIGHT)) # width, height
+
+screen = pg.display.set_mode((1200,600),pg.SRCALPHA) # width, height
 pg.display.set_caption("PyBall")
 
 
@@ -32,7 +33,7 @@ clock = pg.time.Clock()
 def runtime():
     
     running = True
-    newguy = Pawn("bigboyo","red",True,screen,(90,90))
+    newguy = Pawn("bigboyo","red",True,screen,(200,220),(50,50))
     while running:
        
         clock.tick(maxTicks)
@@ -40,7 +41,8 @@ def runtime():
         for event in pg.event.get():
             match event.type:
                 case pg.QUIT:
-                    running = False
+                    pg.quit()
+                    sys.exit()
 
 
                 
@@ -50,7 +52,8 @@ def runtime():
                     
       
         screen.fill((themeColours["green"]))
-        screen.blit(field,(20,20))
+        #screen.blit(field,(20,20))
+        pg.draw.circle(screen,themeColours["yellow"],(200,200),100)
         newguy.render()
         pg.display.flip()
        
