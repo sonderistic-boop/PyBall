@@ -37,9 +37,11 @@ class Pawn(pg.sprite.Sprite):
 
         #physics variables
         self.velocity = pg.math.Vector2(0,0)
+        self.maxVelocity =5
         self.mass = 2
         self.inverse_mass = 1/self.mass
         self.restitution = 0.5
+        
 
         #assigns the image and rect attributes to the sprite
 
@@ -92,11 +94,9 @@ class Pawn(pg.sprite.Sprite):
             self.position[1] = 600 - self.h
             self.velocity[1] *= -1
 
-    
+    #constrains the velocity of the pawn to the max velocity
     def constrainvelocity(self):
-        if self.velocity.magnitude() > 5:
-            self.velocity.scale_to_length(5)
-        
+        self.velocity.scale_to_length(5) if self.velocity.magnitude() > self.maxVelocity else None
 
 
 

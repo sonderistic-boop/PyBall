@@ -80,7 +80,6 @@ def runtime():
         #screen.fill((255, 0, 0) if collide else (255, 255, 255))
         
         #screen.blit(field,(20,20))
-        #pg.draw.circle(screen,themeColours["yellow"],(200,200),100)
         newguy.updatePhysics()
         newball.updatePhysics()
         newball.render()
