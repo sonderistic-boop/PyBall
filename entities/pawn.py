@@ -15,8 +15,9 @@ themeColours = {
 
 #typical haxball player has 30 diameter, 50 for the outer, 
 
+#ball is two thirds the size of the player
 class Pawn(pg.sprite.Sprite):
-    def __init__(self,name,team,isPlayer,surface,pos,size):
+    def __init__(self,name,team,isPlayer,surface,position,size):
 
         #inherits from sprite class, assigns all variables declared at initialisation
         super().__init__()
@@ -24,19 +25,26 @@ class Pawn(pg.sprite.Sprite):
         self.team = team
         self.isPlayer = isPlayer
         self.surface = surface
-        self.pos =  pg.math.Vector2(pos)
+        self.position =  pg.math.Vector2(position)
+
+        #diameter of the pawn
         self.size = size
         self.w,self.h = size
+        self.radius =  (((self.w//2)**2 + (self.h//2)**2) ** 0.5)*0.64
+        #colour  of the pawn
         self.colour = pg.Color(themeColours[team])
 
 
         #physics variables
-        self.vel = pg.math.Vector2(0,0)
+        self.velocity = pg.math.Vector2(0,0)
+        self.mass = 2
+        self.inverse_mass = 1/self.mass
+        self.restitution = 0.5
 
         #assigns the image and rect attributes to the sprite
 
         self.image = pg.Surface((self.w,self.h),pg.SRCALPHA)
-        self.rect = self.image.get_rect(topleft = (pos[0],pos[1]))
+        self.rect = self.image.get_rect(topleft = (position[0],position[1]))
         self.renderGraphics()
         self.mask = pg.mask.from_surface(self.image)
 
@@ -45,7 +53,7 @@ class Pawn(pg.sprite.Sprite):
 
     #renders the pawn, and updates the mask, if the pawn is the player, a circle is drawn around the pawn
     def render(self):
-        self.rect = self.image.get_rect(topleft = (self.pos[0],self.pos[1]))
+        self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
 
         self.renderGraphics()
         self.mask = pg.mask.from_surface(self.image)
@@ -54,19 +62,40 @@ class Pawn(pg.sprite.Sprite):
 
         
 
-        self.surface.blit(self.image,(self.pos[0],self.pos[1]))
+        self.surface.blit(self.image,(self.position[0],self.position[1]))
         
         
     #renders the graphics of the pawn, the outer circle and the inner circle
     def renderGraphics(self):
+        
         pg.draw.circle(self.image,(0,0,0),(self.w//2,self.h//2),(0.64*(self.w//2)))
-        pg.draw.circle(self.image,self.colour,(self.h//2,self.h//2),(0.6*(self.w//2)))
+        pg.draw.circle(self.image,self.colour,(self.h//2,self.h//2),(0.55*(self.w//2)))
 
 
     def updatePhysics(self):
-        
-        self.pos  +=  self.vel
-        self.vel *= 0.975
+        self.constrainvelocity()
+        #self.wallcollide()
+        self.position  +=  self.velocity
+        self.velocity *= 0.96
+
+    def wallcollide(self):
+        if self.position[0] < 0:
+            self.position[0] = 0
+            self.velocity[0] *= -1
+        if self.position[0] > 1200 - self.w:
+            self.position[0] = 1200 - self.w
+            self.velocity[0] *= -1
+        if self.position[1] < 0:
+            self.position[1] = 0
+            self.velocity[1] *= -1
+        if self.position[1] > 600 - self.h:
+            self.position[1] = 600 - self.h
+            self.velocity[1] *= -1
+
+    
+    def constrainvelocity(self):
+        if self.velocity.magnitude() > 5:
+            self.velocity.scale_to_length(5)
         
 
 

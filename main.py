@@ -8,6 +8,7 @@ import sys # for sys.exit()
 
 from entities.pawn import Pawn
 from entities.ball import Ball
+import logic.collisions as collisions
 
 pg.init() # initialises pg
 
@@ -39,8 +40,8 @@ clock = pg.time.Clock()
 def runtime():
     #the main function
     running = True
-    newball = Ball(screen,(200,200),(20,20))
-    newguy = Pawn("bigboyo","red",True,screen,(400,400),(50,50))
+    newball = Ball(screen,(200,200),(40,40))
+    newguy = Pawn("bigboyo","red",True,screen,(400,400),(93.75,93.75))
     guygroup =  (pg.sprite.GroupSingle(newguy))
     ballgroup = (pg.sprite.GroupSingle(newball))
     while running:
@@ -58,21 +59,34 @@ def runtime():
 
                 
         keys = pg.key.get_pressed()
-        newguy.vel[0] += (keys[pg.K_RIGHT] - keys[pg.K_LEFT]) * 0.5
-        newguy.vel[1] += (keys[pg.K_DOWN] - keys[pg.K_UP]) * 0.5
+        newguy.velocity[0] += (keys[pg.K_RIGHT] - keys[pg.K_LEFT]) * 0.1
+        newguy.velocity[1] += (keys[pg.K_DOWN] - keys[pg.K_UP]) * 0.1
+
+        
+
         
         collide = pg.sprite.spritecollide(newball, guygroup, False, pg.sprite.collide_mask)
+
+        if keys[pg.K_x] and collide:
+            collisions.kick_ball(newball,newguy)
+
+        if collide:
+            collisions.collision_ball(newguy,newball)
+
+
         
       
         screen.fill((themeColours["green"]))
-        screen.fill((255, 0, 0) if collide else (255, 255, 255))
+        #screen.fill((255, 0, 0) if collide else (255, 255, 255))
         
         #screen.blit(field,(20,20))
         #pg.draw.circle(screen,themeColours["yellow"],(200,200),100)
         newguy.updatePhysics()
+        newball.updatePhysics()
         newball.render()
+        print(newguy.velocity)
         newguy.render()
-        print(newguy.vel)
+        
         pg.display.flip()
        
 

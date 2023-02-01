@@ -1,0 +1,1 @@
+#standard stadiums should be 24  pawns wide
