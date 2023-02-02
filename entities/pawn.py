@@ -39,7 +39,7 @@ class Pawn(pg.sprite.Sprite):
         self.velocity = pg.math.Vector2(0,0)
         self.maxVelocity =5
         self.mass = 2
-        self.inverse_mass = 1/self.mass
+        self.inverseMass = 1/self.mass
         self.restitution = 0.5
         
 

@@ -26,8 +26,8 @@ themeColours = {
 }
 #the maximum number of ticks per second
 maxTicks = 60
-
-screen = pg.display.set_mode((1200,600),pg.SRCALPHA) # width, height
+screenBounds = (1920,1080)
+screen = pg.display.set_mode(screenBounds,pg.SRCALPHA) # width, height
 pg.display.set_caption("PyBall")
 
 
@@ -40,10 +40,16 @@ clock = pg.time.Clock()
 def runtime():
     #the main function
     running = True
+
+
     newball = Ball(screen,(200,200),(40,40))
     newguy = Pawn("bigboyo","red",True,screen,(400,400),(93.75,93.75))
+  
     guygroup =  (pg.sprite.GroupSingle(newguy))
     ballgroup = (pg.sprite.GroupSingle(newball))
+
+
+
     while running:
         #while running is true, the game will run
        
@@ -62,34 +68,34 @@ def runtime():
         newguy.velocity[0] += (keys[pg.K_RIGHT] - keys[pg.K_LEFT]) * 0.1
         newguy.velocity[1] += (keys[pg.K_DOWN] - keys[pg.K_UP]) * 0.1
 
-        
-
+       
         
         collide = pg.sprite.spritecollide(newball, guygroup, False, pg.sprite.collide_mask)
 
         if keys[pg.K_x] and collide:
-            collisions.kick_ball(newball,newguy)
+            collisions.thrust(newball,newguy)
 
         if collide:
             collisions.collision_ball(newguy,newball)
 
-
         
-      
+       
         screen.fill((themeColours["green"]))
-        #screen.fill((255, 0, 0) if collide else (255, 255, 255))
-        
-        #screen.blit(field,(20,20))
+
         newguy.updatePhysics()
         newball.updatePhysics()
+
+
         newball.render()
-        print(newguy.velocity)
         newguy.render()
+        
         
         pg.display.flip()
        
 
-
+#def collisionHandler():
+    
+    
 
 
 

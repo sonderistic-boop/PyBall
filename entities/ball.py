@@ -33,7 +33,7 @@ class Ball(pg.sprite.Sprite):
         #physics variables
         self.velocity = pg.math.Vector2(0,0)
         self.mass = 1
-        self.inverse_mass = 1/self.mass
+        self.inverseMass = 1/self.mass
         self.restitution = 0.5
 
 
