@@ -1,4 +1,5 @@
 import pygame as pg
+import pygame.gfxdraw as gfxdraw
 
 #this is a dictionary of colours, the keys are the names of the colours, and the values are the hex codes of the colours
 themeColours = {
@@ -36,11 +37,14 @@ class Pawn(pg.sprite.Sprite):
 
 
         #physics variables
+        self.initialPosition = pg.math.Vector2(position)
         self.velocity = pg.math.Vector2(0,0)
         self.maxVelocity =5
         self.mass = 2
         self.inverseMass = 1/self.mass
         self.restitution = 0.5
+        self.acceleration = 0.1
+        self.damping = 0.96
         
 
         #assigns the image and rect attributes to the sprite
@@ -58,7 +62,7 @@ class Pawn(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
 
         self.renderGraphics()
-        self.mask = pg.mask.from_surface(self.image)
+        #self.mask = pg.mask.from_surface(self.image)
         if self.isPlayer:
             pg.draw.circle(self.image,(255,255,255,51),(self.w//2,self.h//2),(self.w//2),int(0.12*(self.w//2)))
 
@@ -78,7 +82,7 @@ class Pawn(pg.sprite.Sprite):
         self.constrainvelocity()
         #self.wallcollide()
         self.position  +=  self.velocity
-        self.velocity *= 0.96
+        self.velocity *= self.damping
 
     def wallcollide(self):
         if self.position[0] < 0:
