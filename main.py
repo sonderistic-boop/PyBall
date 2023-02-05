@@ -8,8 +8,11 @@ import sys # for sys.exit()
 
 from entities.pawn import Pawn
 from entities.ball import Ball
-import logic.collisions as collisions
-
+from entities.stadium.line import Line
+from entities.stadium.goal.goal import collidingGoal
+import logic.physics as physics
+from entities.stadium.arc import Arc
+from entities.stadium.stadiums import smallStadium
 pg.init() # initialises pg
 
 #the colours used in the game
@@ -26,7 +29,7 @@ themeColours = {
 }
 #the maximum number of ticks per second
 maxTicks = 60
-screenBounds = (1920,1080)
+screenBounds = (1600,1000)
 screen = pg.display.set_mode(screenBounds,pg.SRCALPHA) # width, height
 pg.display.set_caption("PyBall")
 
@@ -42,11 +45,14 @@ def runtime():
     running = True
 
 
-    newball = Ball(screen,(200,200),(40,40))
-    newguy = Pawn("bigboyo","red",True,screen,(400,400),(93.75,93.75))
-  
+    newball = Ball(screen,(200,200),(30,30))
+    newguy = Pawn("bigboyo","red",True,screen,(400,400),(70.3,70.3))
+    
+    
+    newstadium = smallStadium(screen,(100,100),["red","blue"])
     guygroup =  (pg.sprite.GroupSingle(newguy))
     ballgroup = (pg.sprite.GroupSingle(newball))
+    newarc = Arc(screen,(600,400),30,(0,math.pi/2),(255,255,255,128))
 
 
 
@@ -73,10 +79,10 @@ def runtime():
         collide = pg.sprite.spritecollide(newball, guygroup, False, pg.sprite.collide_mask)
 
         if keys[pg.K_x] and collide:
-            collisions.thrust(newball,newguy)
+            physics.thrust(newball,newguy)
 
         if collide:
-            collisions.collision_ball(newguy,newball)
+            physics.collision_ball(newguy,newball)
 
         
        
@@ -85,9 +91,12 @@ def runtime():
         newguy.updatePhysics()
         newball.updatePhysics()
 
-
+        newstadium.render()
         newball.render()
         newguy.render()
+        newarc.render()
+        #pg.draw.arc(screen,(themeColours["red"]),[500,200,400,400],0,math.pi,8)
+
         
         
         pg.display.flip()
