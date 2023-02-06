@@ -8,3 +8,9 @@ themeColours = {
     "orange" : "#e69138"
 
 }
+
+tiles = {
+    "field" : pg.image.load("./assets/tiles/fieldtiles/fieldtile.jpg"),
+    "stripedfield" : pg.image.load("./assets/tiles/fieldtiles/stripedfieldtile.jpg"),
+    "hockey" : pg.image.load("./assets/tiles/fieldtiles/hockeytile.jpg")
+}
