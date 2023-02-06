@@ -4,6 +4,10 @@ from entities.stadium.line import Line
 from entities.stadium.goal.goal import collidingGoal
 from entities.stadium.goal.goal import Goal
 
+tiles = {
+    "field" : pg.transform.scale((pg.image.load("./assets/tiles/fieldtiles/fieldtile.jpg")),(300,300)),
+    "stripedfield" : pg.transform.scale((pg.image.load("./assets/tiles/fieldtiles/stripedfieldtile.jpg")),(300,300))
+}
 class Stadium():
     def __init__(self,screen,position,size):
 
@@ -15,13 +19,24 @@ class Stadium():
         self.pawns = []
         self.teams = []
         self.ball = None
-        self.tiles = None
+        self.tile = None
         
         #Objects
         self.lines = {}
         self.collidingGoals = {}
         self.goals = {}
         self.arcs = {}
+
+        self.bounds = {
+         "x1" : self.position[0],
+         "x2" : self.position[0]+self.size[0],
+         "y1" : self.position[1],
+         "y2" : self.position[1]+self.size[1],
+         "y3" : self.position[1]+(0.325*self.size[1]),
+         "y4" : self.position[1]+self.size[1]-(0.325*self.size[1]),
+         "xmiddle" : self.position[0]+(0.5*self.size[0]),
+         "goalheight" : 0.35*self.size[1],
+        }
 
 
 
@@ -38,16 +53,25 @@ class Stadium():
     
     def renderGraphics(self):
         self.image.fill((0,0,0,0))
+
+        self.stamping()
+
         for line in self.lines:
             self.lines[line].render()
-        for collidingGoal in self.collidingGoals:
-            self.collidingGoals[collidingGoal].render()
-        
+
         for goal in self.goals:
             self.goals[goal].render()
-        
+
+        for collidingGoal in self.collidingGoals:
+            self.collidingGoals[collidingGoal].render()
+         
         for arc in self.arcs:
             self.arcs[arc].render()
+    
+    def stamping(self):
+        for i in range(self.bounds["x1"],self.bounds["x2"],300):
+            for j in range(self.bounds["y1"],self.bounds["y2"],300):
+                self.screen.blit(self.tile,(i,j))
 
 
 
@@ -62,18 +86,9 @@ class smallStadium(Stadium):
         self.pawns = []
         self.teams = teams
         self.ball = None
-        self.tiles = None
+        self.tile = tiles["stripedfield"]
 
-        self.bounds = {
-         "x1" : self.position[0],
-         "x2" : self.position[0]+self.size[0]-4,
-         "y1" : self.position[1],
-         "y2" : self.position[1]+self.size[1],
-         "y3" : self.position[1]+(0.325*self.size[1]),
-         "y4" : self.position[1]+self.size[1]-(0.325*self.size[1]),
-         "xmiddle" : self.position[0]+(0.5*self.size[0]),
-         "goalheight" : 0.35*self.size[1]+30,
-        }
+        
 
         #goal should be 210 down from top and 210 up from bottom
         self.lines = {
@@ -84,7 +99,7 @@ class smallStadium(Stadium):
             "left1" : Line(self.screen,False,True,(self.bounds["x1"],self.bounds["y1"]),(self.bounds["x1"],self.bounds["y3"])),
             "left2" : Line(self.screen,False,True,(self.bounds["x1"],self.bounds["y4"]),(self.bounds["x1"],self.bounds["y2"])),
             "right1" : Line(self.screen,False,True,(self.bounds["x2"],self.bounds["y1"]),(self.bounds["x2"],self.bounds["y3"])),
-            "right2" : Line(self.screen,False,True,(self.bounds["x2"],self.bounds["y4"]),(self.bounds["x2"],self.bounds["y2"])),
+            "right2" : Line(self.screen,False,True,(self.bounds["x2"],self.bounds["y4"]),(self.bounds["x2"],self.bounds["y2"]+4)),
 
 
             "middle" : Line(self.screen,False,False,(self.bounds["xmiddle"],self.bounds["y1"]),(self.bounds["xmiddle"],self.bounds["y2"])),
@@ -92,13 +107,13 @@ class smallStadium(Stadium):
 
         self.collidingGoals = {
     
-            "left": collidingGoal(self.screen,(self.bounds["x1"]-94,self.bounds["y3"]),self.bounds["goalheight"],self.teams[0],"left"),
-            "right": collidingGoal(self.screen,(self.bounds["x2"],self.bounds["y3"]),self.bounds["goalheight"],self.teams[1],"right")
+            "left": collidingGoal(self.screen,(self.bounds["x1"]-94+15,self.bounds["y3"]),self.bounds["goalheight"],self.teams[0],"left"),
+            "right": collidingGoal(self.screen,(self.bounds["x2"]-15,self.bounds["y3"]),self.bounds["goalheight"],self.teams[1],"right")
         }
     
         self.goals = {
-            #"left": Goal(self.screen,(self.position[0],),(200,800),),
-            #"right": Goal(self.screen,(self.position[0]+self.size[0],200),(1400,800))
+            "left": Goal(self.screen,(self.bounds["x1"],self.bounds["y3"]),(self.bounds["x1"],self.bounds["y4"]),self.teams[0]),
+            "right": Goal(self.screen,(self.bounds["x2"],self.bounds["y3"]),(self.bounds["x2"],self.bounds["y4"]),self.teams[1])
         }
 
 
