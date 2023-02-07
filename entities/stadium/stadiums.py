@@ -6,7 +6,7 @@ from entities.stadium.goal.goal import Goal
 
 tiles = {
     "field" : pg.transform.scale((pg.image.load("./assets/tiles/fieldtiles/fieldtile.jpg")),(300,300)),
-    "stripedfield" : pg.transform.scale((pg.image.load("./assets/tiles/fieldtiles/stripedfieldtile.jpg")),(300,300))
+    "stripedfield" : pg.transform.scale((pg.image.load("./assets/tiles/fieldtiles/bg.png")),(120,120))
 }
 class Stadium():
     def __init__(self,screen,position,size):
@@ -35,7 +35,8 @@ class Stadium():
          "y3" : self.position[1]+(0.325*self.size[1]),
          "y4" : self.position[1]+self.size[1]-(0.325*self.size[1]),
          "xmiddle" : self.position[0]+(0.5*self.size[0]),
-         "goalheight" : 0.35*self.size[1],
+         "ymiddle" : self.position[1]+(0.5*self.size[1]),
+         "goalheight" : 0.35*self.size[1]
         }
 
 
@@ -69,8 +70,8 @@ class Stadium():
             self.arcs[arc].render()
     
     def stamping(self):
-        for i in range(self.bounds["x1"],self.bounds["x2"],300):
-            for j in range(self.bounds["y1"],self.bounds["y2"],300):
+        for i in range(self.bounds["x1"],self.bounds["x2"],120):
+            for j in range(self.bounds["y1"],self.bounds["y2"],120):
                 self.screen.blit(self.tile,(i,j))
 
 
