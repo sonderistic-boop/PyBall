@@ -23,6 +23,7 @@ class Ball(pg.sprite.Sprite):
         super().__init__()
         self.surface = surface
         self.position =  pg.math.Vector2(position)
+        self.initialPosition =  pg.math.Vector2(position)
 
         #diameter of the ball
         self.size = size
@@ -83,6 +84,8 @@ class Ball(pg.sprite.Sprite):
                 self.velocity[1] *= -1
         
 
-
+    def reset(self):
+        self.position = self.initialPosition
+        self.velocity = pg.math.Vector2(0,0)
 
 

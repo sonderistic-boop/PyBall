@@ -4,7 +4,7 @@ import pygame as pg
 #given two objects, objects, with mass, velocity and restitution, 
 #simulate a physics collision between them, and 
 #return the new velocities of the objects after the collision
-def collision_ball(obj1,obj2):
+def ballBallCollision(obj1,obj2):
 
 
     normalVector = ((obj2.position + pg.math.Vector2(obj2.w//2,obj2.h//2)) - (obj1.position + pg.math.Vector2(obj1.w//2,obj1.h//2))).normalize()

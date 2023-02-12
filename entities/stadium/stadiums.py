@@ -34,9 +34,10 @@ class Stadium():
          "y2" : self.position[1]+self.size[1],
          "y3" : self.position[1]+(0.325*self.size[1]),
          "y4" : self.position[1]+self.size[1]-(0.325*self.size[1]),
-         "xmiddle" : self.position[0]+(0.5*self.size[0]),
-         "ymiddle" : self.position[1]+(0.5*self.size[1]),
-         "goalheight" : 0.35*self.size[1]
+         "middle" : (self.position[0]+(0.5*self.size[0]),self.position[1]+(0.5*self.size[1])),
+         "goalheight" : 0.35*self.size[1],
+         "xleftmiddle" : self.position[0]+(0.25*self.size[0]),
+         "xrightmiddle" : self.position[0]+(0.75*self.size[0])
         }
 
 
@@ -57,6 +58,22 @@ class Stadium():
 
         self.stamping()
 
+        for line in self.lines:
+            self.lines[line].render()
+
+        for goal in self.goals:
+            self.goals[goal].render()
+
+        for collidingGoal in self.collidingGoals:
+            self.collidingGoals[collidingGoal].render()
+         
+        for arc in self.arcs:
+            self.arcs[arc].render()
+            
+            
+            
+    def collisionGroups(self):
+    
         for line in self.lines:
             self.lines[line].render()
 
@@ -103,7 +120,7 @@ class smallStadium(Stadium):
             "right2" : Line(self.screen,False,True,(self.bounds["x2"],self.bounds["y4"]),(self.bounds["x2"],self.bounds["y2"]+4)),
 
 
-            "middle" : Line(self.screen,False,False,(self.bounds["xmiddle"],self.bounds["y1"]),(self.bounds["xmiddle"],self.bounds["y2"])),
+            "middle" : Line(self.screen,False,False,(self.bounds["middle"][0],self.bounds["y1"]),(self.bounds["middle"][0],self.bounds["y2"])),
         }
 
         self.collidingGoals = {

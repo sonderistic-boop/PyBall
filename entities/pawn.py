@@ -27,6 +27,7 @@ class Pawn(pg.sprite.Sprite):
         self.isPlayer = isPlayer
         self.surface = surface
         self.position =  pg.math.Vector2(position)
+        self.initialPosition = pg.math.Vector2(position)
 
         #diameter of the pawn
         self.size = size
@@ -37,7 +38,7 @@ class Pawn(pg.sprite.Sprite):
 
 
         #physics variables
-        self.initialPosition = pg.math.Vector2(position)
+        
         self.velocity = pg.math.Vector2(0,0)
         self.maxVelocity =5
         self.mass = 2
@@ -103,6 +104,10 @@ class Pawn(pg.sprite.Sprite):
         self.velocity.scale_to_length(5) if self.velocity.magnitude() > self.maxVelocity else None
 
 
+    #resets the pawn to its initial position
+    def reset(self):
+        self.position = self.initialPosition
+        self.velocity = pg.math.Vector2(0,0)
 
 
 

@@ -51,6 +51,7 @@ class collidingGoal(pg.sprite.Sprite):
         
         self.surface.blit(self.image,(self.position[0],self.position[1]))
     
+
     def renderGraphics(self):
         
         pg.draw.line(self.image,(0,0,0),(19,15),(self.size[0]-8,15),8)
