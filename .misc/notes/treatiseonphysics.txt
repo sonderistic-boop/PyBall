@@ -1,0 +1,4 @@
+in essence, create a "contact" material which handles collisions when a body is in contact with 
+other materials. Using the factors below (and more), find how tf it works
+
+friction,resitution,stiffness,relaxation,frictonStiffness,frictionRelaxation,
