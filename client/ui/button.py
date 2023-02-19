@@ -1,11 +1,11 @@
 import pygame as pg
 
 #set up a button class
-class Button(pg.sprite.Sprite):
-    def __init__(self,surface,position,size,colour = (255,255,255,0),text = "",textColour = (0,0,0),textSize = 20):
+class Button:
+    def __init__(self,surface,pos,size,colour = (255,255,255,0),text = "",textColour = (0,0,0),textSize = 20):
         super().__init__()
         self.surface = surface
-        self.position = position
+        self.position = pos
         self.size = size
         self.colour = colour
         self.text = text

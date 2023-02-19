@@ -13,7 +13,6 @@ class Menu:
         self.buttons.append(Button(self.surface,(self.surface.get_width()/2 - 100,self.surface.get_height()/2),(200,50),self.themeColours[2],"Settings"))
         self.buttons.append(Button(self.surface,(self.surface.get_width()/2 - 100,self.surface.get_height()/2 + 50),(200,50),self.themeColours[3],"Credits"))
         self.buttons.append(Button(self.surface,(self.surface.get_width()/2 - 100,self.surface.get_height()/2 + 100),(200,50),self.themeColours[4],"Exit"))
-        self.buttons.append(Button(self.surface,(self.surface.get_width()/2 - 100,self.surface.get_height()/2 + 150),(200,50),self.themeColours[5],"Test Button"))
 
     def render(self):
         for button in self.buttons:
