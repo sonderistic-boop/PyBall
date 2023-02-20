@@ -1,0 +1,3 @@
+player joins lobby, server keeps record of their client. starts the game with a pawn assigned to each client in a dictionary with their name
+
+every tick, a package is sent with gamestate(scored,gameend),time remaining, score, pos of the ball, and pos of every player. at game start a package is also sent with the stadium type, initial positions and gamestate of countdown
