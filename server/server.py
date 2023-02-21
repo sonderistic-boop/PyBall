@@ -1,77 +1,94 @@
 import socket
-from _thread import *
 import pickle
+from _thread import *
 from network import get_ip
+class pyBallServer:
+    
+    def __init__(self):
+        
+        self.port = 5555
+        self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.serverIP = get_ip()
+        
+        self.gamesettings = {
+            "stadium" : "smallStadium",
+            "time" : 5,
+            "maxScore": 3 
+            
+        }
+            
+        self.players = {
+            "team1" : {},
+            "team2" : {},
+            "neutral" : {}
 
-server = get_ip()
-print(server)
-port = 5555
 
-newSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-try:
-    newSocket.bind((server, port))
-except socket.error as e:
-    str(e)
-
-newSocket.listen(2)
-print("Waiting for a connection, Server Started")
-
-connnected = set()
-games = {}
-idCount = 0
-
-
-def threaded_client(connection, p, gameId):
-    global idCount
-    connection.send(str.encode("received"))
-
-    reply = ""
-    while True:
+        }
+       
+        #player should have name,address,
+      
         try:
-            data = connection.recv(4096).decode()
+            self.serverSocket.bind((self.serverIP, self.port))
+        except socket.error as e:
+            str("Error")
 
-            if gameId in games:
-                game = games[gameId]
 
-                if not data:
-                    break
-                else:
-                    if data == "reset":
-                        game.resetWent()
-                    elif data != "get":
-                        game.play(p, data)
 
-                    connection.sendall(pickle.dumps(game))
-            else:
+
+
+        print("Server IP:", self.serverIP)
+        self.serverSocket.listen()
+        print("Waiting for a connection, Server Started")
+
+
+
+
+    def newClient(self,connection, address):
+        connection.send(str.encode("received"))
+        player = connection.recv(4096).decode()
+        print(player)
+
+        self.players["neutral"][player] = {"address": address}
+        
+        while True:
+            try:
+                data = connection.recv(4096).decode()
+                #first data received should  be the player name,
+
+             
+                    
+
+                
+            except:
                 break
+
+        print("Lost connection")
+        try:
+            print("deleting", player)
+            del self.gamesettings["players"][player]
         except:
-            break
-
-    print("Lost connection")
-    try:
-        del games[gameId]
-        print("Closing Game", gameId)
-    except:
-        pass
-    idCount -= 1
-    connection.close()
+            pass
+        connection.close()
 
 
+    def connectionChecker(self):
+        
+        connection, address = self.serverSocket.accept()
+        print("connected to:", address)
+        
 
+
+        start_new_thread(self.newClient, (connection,address))
+
+
+        
+        
+        
+        
+        
+   
+ 
+servernew = pyBallServer()
+ 
 while True:
-    connection, addr = newSocket.accept()
-    print("connected to:", addr)
-
-    idCount += 1
-    p = 0
-    gameId = (idCount - 1)//2
-    if idCount % 2 == 1:
-        games[gameId] = Game(gameId)
-        print("Creating a new game...")
-    else:
-        games[gameId].ready = True
-        p = 1
-
-
-    start_new_thread(threaded_client, (connection, p, gameId))
+    servernew.connectionChecker()

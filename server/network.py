@@ -3,11 +3,11 @@ import pickle
 
 
 class Network:
-    def __init__(self,server):
+    def __init__(self,serverIp):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = server
+        self.serverIp = serverIp
         self.port = 5555
-        self.address = (self.server, self.port)
+        self.address = (self.serverIp, self.port)
         self.initialData = self.connect()
 
     def getInitData(self):
@@ -15,7 +15,10 @@ class Network:
 
     def connect(self):
         try:
+            print("ohyeah")
+            print(self.address)
             self.client.connect(self.address)
+            print("done")
             return self.client.recv(2048).decode()
         except:
             pass
@@ -23,19 +26,22 @@ class Network:
     def send(self, data):
         try:
             self.client.send(str.encode(data))
-            return pickle.loads(self.client.recv(2048*2))
+            return pickle.loads(self.client.recv(4096))
         except socket.error as e:
             print(e)
+
+
 
 
 def get_ip():
         tempSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         tempSocket.settimeout(0)
         try:
-            # doesn't even have to be reachable
+            #connect to dummy server to get ip
             tempSocket.connect(('8.8.8.8', 1))
             ip = tempSocket.getsockname()[0]
         except Exception:
+            #if connection fails, most likely because linux shenanigans, use 127.0.0.1
             ip = '127.0.0.1'
         finally:
             tempSocket.close()
