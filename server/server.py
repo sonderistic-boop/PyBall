@@ -45,7 +45,7 @@ class pyBallServer:
         self.serverSocket.listen()
         print("Waiting for a connection, Server Started")
 
-
+    def startNewGame(self,
 
 
     def newClient(self,connection, address):
@@ -58,9 +58,9 @@ class pyBallServer:
         
         
         
-        sendingDataLoad = pickle.dumps{"gameSettings" : self.gameSettings,
+        sendingDataLoad = pickle.dumps({"gameSettings" : self.gameSettings,
                                        "players" : self.players
-                                      }
+                                      })
         connection.send(sendingDataLoad)
         
         
@@ -96,7 +96,9 @@ class pyBallServer:
                                 "self.gameSettings = receivingData["gameSettings"]
                         
                         if "transferMode" in receivingData:
-                            self.transferMode = receivingData["transferMode"]
+                            if receivingData["transferMode"] != self.transferMode:
+                                self.transferMode = receivingData["transferMode"]
+                                self.game = Game(self.players,self.gameSettings["time"],self.gameSettings["maxScore"]
 
 
 
@@ -104,9 +106,9 @@ class pyBallServer:
 
                     data = receivingDataLoad.copy()
                     #new initial data
-                    sendingDataLoad = pickle.dumps{"gameSettings" : self.gameSettings,
+                    sendingDataLoad = pickle.dumps({"gameSettings" : self.gameSettings,
                                                    "players" : self.players
-                                                  }
+                                                  })
                     connection.send(sendingDataLoad)
                     #send data
                     
@@ -119,6 +121,11 @@ class pyBallServer:
 
                      except:
                         break
+                        
+                        
+                    
+                     
+                    
                 
                 
                 
@@ -164,9 +171,20 @@ class pyBallServer:
         
         
         
-   
+#main    
  
-servernew = pyBallServer()
+server = pyBallServer()
  
 while True:
-    servernew.connectionChecker()
+    if server.transferMode = "lobby":
+        
+        server.connectionChecker()
+    
+    if server.transferMode = "game":
+        server.game.run()
+                     
+                                                 
+                               
+                     
+                     
+        
