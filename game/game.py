@@ -16,7 +16,7 @@ import entities.stadium.stadiums as stadiums
 
 
 class Game():
-    def __init__(self,parentScreen,players,time,maxScore,stadium,colours):
+    def __init__(self,parentScreen,players,time,maxScore,stadium):
         self.size = (1920,1080)
         #declares the parent screen, which is the screen that the game surface will be drawn on
         self.parentScreen = parentScreen
@@ -28,7 +28,10 @@ class Game():
         #declares the maximum score the game will be played to
         self.maxScore = maxScore
 
-        self.teamColours = colours
+        self.teamColours = {
+            "team1" : "red"
+            "team2" : "blue"
+        }
 
         self.leftTeam = {}
         self.rightTeam = {}
