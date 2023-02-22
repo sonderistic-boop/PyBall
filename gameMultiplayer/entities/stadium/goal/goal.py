@@ -53,8 +53,7 @@ class collidingGoal(pg.sprite.Sprite):
         self.image = pg.transform.flip(self.image,self.orientation["left"],False)
         
         
-        self.surface.blit(self.image,(self.position[0],self.position[1]))
-    
+        
 
     def renderGraphics(self):
         
@@ -100,8 +99,7 @@ class Goal(pg.sprite.Sprite):
         self.renderGraphics()
         self.mask = pg.mask.from_surface(self.image)
         
-        self.surface.blit(self.image,(self.startPosition[0],self.startPosition[1]))
-
+        
 
     def renderGraphics(self):
         

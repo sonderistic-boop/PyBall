@@ -1,8 +1,8 @@
 #standard stadiums should be 24  pawns wide
 import pygame as pg
-from entities.stadium.line import Line
-from entities.stadium.goal.goal import collidingGoal
-from entities.stadium.goal.goal import Goal
+from gameMultiplayer.entities.stadium.line import Line
+from gameMultiplayer.entities.stadium.goal.goal import collidingGoal
+from gameMultiplayer.entities.stadium.goal.goal import Goal
 
 tiles = {
     "field" : pg.transform.scale((pg.image.load("./shared/assets/tiles/fieldtiles/fieldtile.png")),(300,300))
@@ -56,7 +56,7 @@ class Stadium():
     def renderGraphics(self):
         self.image.fill((0,0,0,0))
 
-        self.stamping()
+   
 
         for line in self.lines:
             self.lines[line].render()
@@ -72,11 +72,7 @@ class Stadium():
             
             
             
-    def stamping(self):
-        for i in range(self.bounds["x1"],self.bounds["x2"],300):
-            for j in range(self.bounds["y1"],self.bounds["y2"],300):
-                self.screen.blit(self.tile,(i,j))
-
+    
 
 
 

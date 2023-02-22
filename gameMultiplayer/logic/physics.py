@@ -1,5 +1,5 @@
 import pygame as pg
-import logic.collisions as collisions
+import gameMultiplayer.logic.collisions as collisions
 #static value, if true then object will move, if false then object will not move
 
 #given two objects, objects, with mass, velocity and restitution, 

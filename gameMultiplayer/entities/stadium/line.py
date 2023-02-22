@@ -51,7 +51,7 @@ class Line(pg.sprite.Sprite):
         self.renderGraphics()
         self.mask = pg.mask.from_surface(self.image)
 
-        self.surface.blit(self.image,(self.startPosition[0],self.startPosition[1]))
+        
 
 
     def renderGraphics(self):

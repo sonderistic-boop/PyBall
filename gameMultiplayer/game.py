@@ -8,33 +8,38 @@ import math
 import sys
 
 
-import logic.physics as physics
-import logic.collisions as col
-from entities.pawn import Pawn
-from entities.ball import Ball
-import entities.stadium.stadiums as stadiums
+import gameMultiplayer.logic.physics as physics
+import gameMultiplayer.logic.collisions as col
+from gameMultiplayer.entities.pawn import Pawn
+from gameMultiplayer.entities.ball import Ball
+import gameMultiplayer.entities.stadium.stadiums as stadiums
 
 
 class Game():
-    def __init__(self,parentScreen,players,time,maxScore,stadium,colours):
-        self.size = (1920,1080)
+    def __init__(self,players,time,maxScore,stadium):
+        
         #declares the parent screen, which is the screen that the game surface will be drawn on
-        self.parentScreen = parentScreen
         #declares which stadium the game will be played on
         self.stadium = stadium
+        self.gameState = "gameStart"
+
+        #numerous game states, "gameStart","game","goalScored","gameEnd"
 
         #declares how long the game will last
         self.time = time
         #declares the maximum score the game will be played to
         self.maxScore = maxScore
 
-        self.teamColours = colours
+        self.colours = {
+            "team1" : "red",
+            "team2" : "blue"
+            }
 
-        self.leftTeam = {}
-        self.rightTeam = {}
+        self.team1= {}
+        self.team2 = {}
 
-        self.leftTeamScore = 0
-        self.rightTeamScore = 0
+        self.team1Score = 0
+        self.team2Score = 0
 
         
         
@@ -45,17 +50,17 @@ class Game():
         self.screen = pg.Surface((self.size),pg.SRCALPHA)
         
         self.stadium = getattr(stadiums,stadium)
-        self.stadium = self.stadium(self.screen,(100,100),[colours["team1"],colours["team2"]])
+        self.stadium = self.stadium(self.screen,(100,100),[self.colours["team1"],self.colours["team2"]])
         
         
         self.ball = Ball(self.screen,(self.stadium.bounds["middle"][0],self.stadium.bounds["middle"][1]),(30,30))
         
         #load players, and add them to the left and right team dictionaries. initial position will be the middle-left of the stadium for the left team, and the middle-right of the stadium for the right team
         for i in players["team1"]:
-            self.leftTeam[i] = Pawn(i,colours["team1"],False,self.screen,(400,400),(70.3,70.3))          
+            self.team1[i] = Pawn(i,self.colours["team1"],False,self.screen,(400,400),(70.3,70.3))          
         
         for i in players["team2"]:
-            self.rightTeam[i] = Pawn(i,colours["team2"],False,self.screen,(400,400),(70.3,70.3))   
+            self.team2[i] = Pawn(i,self.colours["team2"],False,self.screen,(400,400),(70.3,70.3))   
 
         
         
@@ -66,8 +71,8 @@ class Game():
 
 
         self.playerGroup = pg.sprite.Group()
-        self.playerGroup.add(self.leftTeam.values())
-        self.playerGroup.add(self.rightTeam.values())
+        self.playerGroup.add(self.team1.values())
+        self.playerGroup.add(self.team2.values())
 
 
         self.stadiumBoundsGroup = pg.sprite.Group()
@@ -85,7 +90,6 @@ class Game():
         #render the stadium, render the ball, render the players
         self.collisionChecker()
         self.updatePhysics()
-        self.render()
         
            
 
@@ -98,7 +102,7 @@ class Game():
         self.ball.render()
         
         
-        self.parentScreen.blit(self.screen,(0,50))
+        
 
     def updatePhysics(self):
         #update the ball, update the players
@@ -156,9 +160,9 @@ class Game():
     def goalScored(self,goal):
         
         if goal.team == self.teamColours["team1"]:
-            self.rightTeamScore += 1
+            self.team2Score += 1
         elif goal.team == self.teamColours["team2"]:
-            self.leftTeamScore += 1
+            self.team1Score += 1
 
         
         self.reset()
@@ -169,6 +173,28 @@ class Game():
         self.ball.reset()
         for i in self.playerGroup:
             i.reset()
+
+    def getData(self):
+        data = {
+            "gameState" : self.gameState,
+            "ball" : self.ball.getData(),
+            "players" : {
+                "team1" : {},
+                "team2" : {}
+                },
+            "score" : {
+                "team1" : self.team1Score,
+                "team2" : self.team2Score
+                },
+            "timeRemaining" : self.time
+            }
+
+        for i in self.team1:
+            data["players"]["team1"][i] = self.team1[i].getData()
+        for i in self.team2:
+            data["players"]["team2"][i] = self.team2[i].getData()
+
+        return data
     
 
     

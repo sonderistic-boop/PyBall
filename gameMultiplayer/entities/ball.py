@@ -55,7 +55,7 @@ class Ball(pg.sprite.Sprite):
         self.renderGraphics()
         #self.mask = pg.mask.from_surface(self.image)
 
-        self.surface.blit(self.image,(self.position[0],self.position[1]))
+        
 
         
         
@@ -76,5 +76,10 @@ class Ball(pg.sprite.Sprite):
     def reset(self):
         self.position = self.initialPosition.copy()
         self.velocity = pg.math.Vector2(0,0)
+    
+    def getData(self):
+        return {
+            "position" : self.position
+            }
 
 

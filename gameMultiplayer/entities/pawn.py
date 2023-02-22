@@ -64,12 +64,9 @@ class Pawn(pg.sprite.Sprite):
 
         self.renderGraphics()
         #self.mask = pg.mask.from_surface(self.image)
-        if self.isPlayer:
-            pg.draw.circle(self.image,(255,255,255,51),(self.w//2,self.h//2),(self.w//2),int(0.12*(self.w//2)))
-
+        
         
 
-        self.surface.blit(self.image,(self.position[0],self.position[1]))
         
         
     #renders the graphics of the pawn, the outer circle and the inner circle
@@ -109,6 +106,14 @@ class Pawn(pg.sprite.Sprite):
     def reset(self):
         self.position = self.initialPosition.copy()
         self.velocity = pg.math.Vector2(0,0)
+
+    def getData(self):
+        return {
+            "name" : self.name,
+            "team" : self.team,
+            "position" : self.position,
+            "size" : self.size
+            }
 
 
 

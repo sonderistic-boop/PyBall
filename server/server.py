@@ -1,7 +1,19 @@
+import os, sys
+from os.path import dirname, join, abspath
+sys.path.insert(0, abspath(join(dirname(__file__), '..')))
+
+
+
+
+
 import socket
 import pickle
 from _thread import *
 from network import get_ip
+import gameMultiplayer.game as gameMultiplayer
+
+
+
 class pyBallServer:
     
     def __init__(self):
@@ -10,6 +22,7 @@ class pyBallServer:
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serverIP = get_ip()
         self.transferMode = "lobby"
+        self.gameBuffer = False
         #two transferModes, "lobby" and "game". While lobby is active, client will send team to server, and server will send back-
         #teams of all players, and gamesettings in a pickle dump object with two dictionaries
         #admin can change any clients team, this request will take precedent over any other.
@@ -17,7 +30,7 @@ class pyBallServer:
         
         self.gamesettings = {
             "stadium" : "smallStadium",
-            "time" : 5,
+            "time" : 300,
             "maxScore": 3 
             
         }
@@ -45,7 +58,7 @@ class pyBallServer:
         self.serverSocket.listen()
         print("Waiting for a connection, Server Started")
 
-    def startNewGame(self,
+   
 
 
     def newClient(self,connection, address):
@@ -71,6 +84,7 @@ class pyBallServer:
         
         
         while True:
+            print(player)
             
             match self.TransferMode:
                 
@@ -93,12 +107,12 @@ class pyBallServer:
                     if adminPrivilege:
                         if "gameSettings" in receivingData:
                             if receivingData["gameSettings"] != self.gameSettings:
-                                "self.gameSettings = receivingData["gameSettings"]
+                                self.gameSettings = receivingData["gameSettings"]
                         
                         if "transferMode" in receivingData:
-                            if receivingData["transferMode"] != self.transferMode:
+                            if receivingData["transferMode"] == "game":
                                 self.transferMode = receivingData["transferMode"]
-                                self.game = Game(self.players,self.gameSettings["time"],self.gameSettings["maxScore"]
+                                self.game = gameMultiplayer.Game(self.players,self.gameSettings["time"],self.gameSettings["maxScore"],self.gameSettings["stadium"])
 
 
 
@@ -115,42 +129,38 @@ class pyBallServer:
                     
                 case "game":
                     #if game, then try and receuve
-                     try:
+                    try:
                         receivingDataLoad = connection.recv(4096).decode()
                         receivingData = pickle.loads(receivingDataLoad) 
-
-                     except:
+                    except:
                         break
-                        
-                        
-                    
-                     
-                    
-                
-                
-                
-                
-        
-                
-                
-                
-                
-            
-                
-                
-                
-                
-                
-                
 
-                
-            
-            
+                    #receivingData should include direction the player moved in, the game will then update the position of the player depending on the direction
+                    #moved, wait for the game buffer to be true and then send the gameState, score, time remaining, and positions of ball and player
 
+                    if receivingData["direction"] != 0:
+                        self.game.players[player].move(receivingData["direction"])
+                    
+                    
+
+                    data = receivingDataLoad.copy()
+
+                    
+                    sendingDataLoad = pickle.dumps(self.game.getData())
+
+
+                    connection.send(sendingDataLoad)
+                        
+ 
         print("Lost connection")
         try:
             print("deleting", player)
-            del self.gamesettings["players"][player]
+            del self.players[data["team"]][str(player)]
+            del self.game.players[data["team"]][str(player)]
+            del getattr(self.game, data["team"])[str(player)]
+            del self.game.playerGroup[str(player)]
+
+        
         except:
             pass
         connection.close()
@@ -176,12 +186,14 @@ class pyBallServer:
 server = pyBallServer()
  
 while True:
-    if server.transferMode = "lobby":
+    server.gameBuffer = False
+    if server.transferMode == "lobby":
         
         server.connectionChecker()
     
-    if server.transferMode = "game":
+    if server.transferMode == "game":
         server.game.run()
+        server.gameBuffer = True
                      
                                                  
                                

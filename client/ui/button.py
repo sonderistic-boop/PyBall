@@ -2,15 +2,15 @@ import pygame as pg
 
 #set up a button class
 class Button:
-    def __init__(self,surface,pos,size,colour = (255,255,255,0),text = "",textColour = (0,0,0),textSize = 20):
-        super().__init__()
+    def __init__(self,surface,pos,size,colour = (155,155,155,0),textColour = (255,255,255)):
         self.surface = surface
         self.position = pos
         self.size = size
         self.colour = colour
-        self.text = text
+        self.borderColour = (0,0,0)
+        self.text = ""
         self.textColour = textColour
-        self.textSize = textSize
+        self.textSize = 20
         self.image = pg.Surface((self.size[0],self.size[1]),pg.SRCALPHA)
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
         self.renderGraphics()
@@ -23,7 +23,8 @@ class Button:
         self.surface.blit(self.image,(self.position[0],self.position[1]))
 
     def renderGraphics(self):
-        pg.draw.rect(self.image,self.colour,(0,0,self.size[0],self.size[1]))
+        pg.draw.rect(self.image,self.colour,self.rect)
+        pg.draw.rect(self.image,self.borderColour,self.rect,4)
         if self.text != "":
             font = pg.font.SysFont("Arial",self.textSize)
             text = font.render(self.text,1,self.textColour)
@@ -39,12 +40,7 @@ class Button:
     def onLeave(self):
         pass
 
-    def onDrag(self):
-        pass
-
-    def onDrop(self):
-        pass
-
+   
     def onTrigger(self):
         pass
 
@@ -60,14 +56,25 @@ class Button:
     def onDisable(self):
         pass
 
-    def onAwake(self):
-        pass
+   
 
-    def onSleep(self):
-        pass
 
-    def onTriggerEnter(self):
-        pass
+class menuButton(Button):
+    def __init__(self,surface,pos,size,text,redirect):
+        super().__init__(surface,pos,size,(51,102,0,0),(255,255,255))
+        self.text = text
+        self.borderColour = (76,153,0,0)
+        self.redirect = redirect
 
-    def onTriggerExit(self):
-        pass
+    def onClick(self):
+        return self.redirect
+    
+    def onHover(self):
+        
+        self.borderColour = (255,255,255,0)
+    
+    def onLeave(self):
+        self.borderColour = (76,153,0,0)
+    
+    
+        

@@ -23,7 +23,7 @@ class Arc(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
         self.renderGraphics()
         self.mask = pg.mask.from_surface(self.image)
-        self.surface.blit(self.image,(self.position[0],self.position[1]))
+        
 
     
     def renderGraphics(self):
