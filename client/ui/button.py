@@ -30,7 +30,9 @@ class Button:
             text = font.render(self.text,1,self.textColour)
             self.image.blit(text,(self.size[0]/2 - text.get_width()/2,self.size[1]/2 - text.get_height()/2))
 
-
+    
+    def eventHandler(self):
+        pass
     def onClick(self):
         pass
 
@@ -66,6 +68,12 @@ class MenuButton(Button):
         self.borderColour = (76,153,0,0)
         self.redirect = redirect
 
+        
+    def eventHandler(self,event):
+         if event.type == pg.MOUSEBUTTONDOWN:
+                onClick(self)
+     
+        
     def onClick(self):
         return self.redirect
     
@@ -75,6 +83,17 @@ class MenuButton(Button):
     
     def onLeave(self):
         self.borderColour = (76,153,0,0)
+      
+    
+class inputButton(Button):
+    def__init__(self,surface,pos,size):
+        super().__init__(surface,pos,size,(0,0,0,0)
+        self.borderColour = (255,255,255) 
+        
+    def eventHandler(self,event):
+         if event.type == pg.MOUSEBUTTONDOWN:
+                 
+    
     
     
         
