@@ -69,9 +69,11 @@ class MenuButton(Button):
         self.redirect = redirect
 
         
-    def eventHandler(self,event):
-         if event.type == pg.MOUSEBUTTONDOWN:
-                onClick(self)
+    def eventHandler(self,event,mouse):
+        if self.rect.collidepoint((mouse)):
+            match event.type:
+                case pg.MOUSEBUTTONDOWN:
+                    onClick(self)
      
         
     def onClick(self):
@@ -88,10 +90,15 @@ class MenuButton(Button):
 class inputButton(Button):
     def__init__(self,surface,pos,size):
         super().__init__(surface,pos,size,(0,0,0,0)
-        self.borderColour = (255,255,255) 
+        self.borderColour = (255,255,255)
+        self.trigger = False
         
-    def eventHandler(self,event):
-         if event.type == pg.MOUSEBUTTONDOWN:
+    def eventHandler(self,event,mouse):
+             match event.type:
+                case pg.MOUSEBUTTONDOWN:
+                    match self.trigger:
+                        case False:
+                    
                  
     
     
