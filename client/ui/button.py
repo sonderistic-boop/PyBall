@@ -59,7 +59,7 @@ class Button:
    
 
 
-class menuButton(Button):
+class MenuButton(Button):
     def __init__(self,surface,pos,size,text,redirect):
         super().__init__(surface,pos,size,(51,102,0,0),(255,255,255))
         self.text = text
