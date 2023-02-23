@@ -96,8 +96,14 @@ class inputButton(Button):
     def eventHandler(self,event,mouse):
              match event.type:
                 case pg.MOUSEBUTTONDOWN:
-                    match self.trigger:
-                        case False:
+                     #if mouse click and mouseposition in rect
+                    if self.rect.collidepoint(mouse):
+                         if self.trigger:
+						   
+        
+                         
+                         
+                         
                     
                  
     
