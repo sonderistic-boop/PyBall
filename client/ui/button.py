@@ -13,23 +13,26 @@ class Button:
         self.textSize = 20
         self.image = pg.Surface((self.size[0],self.size[1]),pg.SRCALPHA)
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
-        self.renderGraphics()
-        self.mask = pg.mask.from_surface(self.image)
+        
 
     def render(self):
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
-        self.renderGraphics()
-        self.mask = pg.mask.from_surface(self.image)
-        self.surface.blit(self.image,(self.position[0],self.position[1]))
 
-    def renderGraphics(self):
-        pg.draw.rect(self.image,self.colour,self.rect)
-        pg.draw.rect(self.image,self.borderColour,self.rect,4)
+        self.renderGraphics()
+
+        self.surface.blit(self.image,(self.position[0],self.position[1]))
+        
         if self.text != "":
             font = pg.font.SysFont("Arial",self.textSize)
             text = font.render(self.text,1,self.textColour)
             self.image.blit(text,(self.size[0]/2 - text.get_width()/2,self.size[1]/2 - text.get_height()/2))
 
+
+    def renderGraphics(self):
+        pg.draw.rect(self.image,self.colour,(0,0,self.size[0],self.size[1]))
+        pg.draw.rect(self.image,self.borderColour,(0,0,self.size[0],self.size[1]),3)
+        
+        
     
     def eventHandler(self):
         pass
@@ -61,10 +64,14 @@ class Button:
    
 
 
+
+
+
 class MenuButton(Button):
     def __init__(self,surface,pos,size,text,redirect):
-        super().__init__(surface,pos,size,(51,102,0,0),(255,255,255))
+        super().__init__(surface,pos,size,(51,102,0,0),(255,255,255,0))
         self.text = text
+        self.colour = (51,102,0,0)
         self.borderColour = (76,153,0,0)
         self.redirect = redirect
 
@@ -73,7 +80,7 @@ class MenuButton(Button):
         if self.rect.collidepoint((mouse)):
             match event.type:
                 case pg.MOUSEBUTTONDOWN:
-                    onClick(self)
+                    self.onClick(self)
      
         
     def onClick(self):
@@ -85,7 +92,24 @@ class MenuButton(Button):
     def onLeave(self):
         self.borderColour = (76,153,0,0)
       
+
     
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class inputButton(Button):
     def __init__(self,surface,pos,size):
         super().__init__(surface,pos,size,(0,0,0,0))
@@ -104,5 +128,14 @@ class inputButton(Button):
                         else:
                             if self.trigger:
                                 self.trigger = False
-                
+
+                    case pg.KEYDOWN:
+                        if self.trigger:
+                            if event.key == pg.K_RETURN:
+                                self.trigger = False
+                            elif event.key == pg.K_BACKSPACE:
+                                self.text = self.text[:-1]
+                            else:
+                                self.text += event.unicode
+                    
 
