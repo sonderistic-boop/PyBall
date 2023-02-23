@@ -80,7 +80,6 @@ class MenuButton(Button):
         return self.redirect
     
     def onHover(self):
-        
         self.borderColour = (255,255,255,0)
     
     def onLeave(self):
@@ -88,25 +87,22 @@ class MenuButton(Button):
       
     
 class inputButton(Button):
-    def__init__(self,surface,pos,size):
-        super().__init__(surface,pos,size,(0,0,0,0)
+    def __init__(self,surface,pos,size):
+        super().__init__(surface,pos,size,(0,0,0,0))
         self.borderColour = (255,255,255)
         self.trigger = False
         
     def eventHandler(self,event,mouse):
-             match event.type:
-                case pg.MOUSEBUTTONDOWN:
-                     #if mouse click and mouseposition in rect
-                    if self.rect.collidepoint(mouse):
-                         if self.trigger:
-						   
-        
-                         
-                         
-                         
-                    
-                 
-    
-    
-    
-        
+            for event in event.type:
+
+                match event:
+                    case pg.MOUSEBUTTONDOWN:
+                        #if mouse click and mouseposition in rect
+                        if self.rect.collidepoint(mouse):
+                            if self.trigger == False:
+                                self.trigger = True
+                        else:
+                            if self.trigger:
+                                self.trigger = False
+                
+
