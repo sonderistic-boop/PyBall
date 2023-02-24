@@ -27,8 +27,7 @@ class Menu:
         self.buttons["Join Game"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),300),(200,50),"Join Game","JoinGame")
         self.buttons["Host Game"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),400),(200,50),"Host Game","HostGame")
         self.buttons["Settings"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),500),(200,50),"Settings","Settings")             
-        self.buttons["Credits"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),600),(200,50),"Credits","Credits")
-        self.buttons["Exit"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),700),(200,50),"Exit","Exit")
+        self.buttons["Exit"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),600),(200,50),"Exit","Exit")
     
     
     
@@ -92,12 +91,44 @@ class JoinGame(Menu):
         self.buttons = {}
         self.buttons["Back"] = MenuButton(self.surface,(((150),150)),(200,50),"Back","Menu")
         self.buttons["Join"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),700),(200,50),"Join","join")
+        self.buttons["Username"] = InputButton(self.surface,(((self.surface.get_width()/2)-100),300),(200,50))
         self.buttons["IP"] = InputButton(self.surface,(((self.surface.get_width()/2)-100),400),(200,50))
         self.buttons["Port"] = InputButton(self.surface,(((self.surface.get_width()/2)-100),500),(200,50))
+
+
+        self.texts = {
+            "IP" : {
+                    "text":"IP:",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.buttons["IP"].position[0]-100,400),
+                    "textSize" : 30
+                    },
+
+            "Port" : {
+                    "text":"Port:",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.buttons["Port"].position[0]-100,500),
+                    "textSize" : 30
+                    },
+            
+            "Username" : {
+                    "text":"Username:",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.buttons["Username"].position[0]-200,300),
+                    "textSize" : 30
+                    }
+
+            }
         
-       
 
-
+    def renderTexts(self):
+        for text in self.texts:
+            font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
+            rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
+            self.surface.blit(rendertext,(self.texts[text]["position"]))
 
     def renderSlidingBackground(self):
         return super(JoinGame,self).renderSlidingBackground()
@@ -134,8 +165,10 @@ class JoinGame(Menu):
         self.renderSlidingBackground()
         s = pg.Surface((self.surface.get_width()-200,self.surface.get_height()-200))
         s.set_alpha(220)                
-        s.fill((0,0,0)) 
+        s.fill((0,0,0))
         self.surface.blit(s,(100,100))
+        self.renderTexts()
+
         self.renderButtons()
 
     def main(self,events):
@@ -143,3 +176,7 @@ class JoinGame(Menu):
         if checker != None:
             return checker
         self.render()
+    
+
+    #class GameLobby:
+        
