@@ -15,10 +15,8 @@ class Network:
 
     def connect(self):
         try:
-            print("ohyeah")
-            print(self.address)
+            
             self.client.connect(self.address)
-            print("done")
             return self.client.recv(2048).decode()
         except:
             pass

@@ -20,11 +20,13 @@ height = 700
 
 
 class Client:
-    def __init__(self,serverIp):
-        self.serverIp = input("Enter server IP: ")
+    def __init__(self,serverIp,screen,info,userinfo):
+        self.serverIp = serverIp
         self.networkInterface = Network(self.serverIp)
-        print(self.networkInterface.getInitData())
+        
 
+    #at the start, send username to the server, receive data in return, which will be used to edit lobby. When the server says that the game has started, start the game and start looping that
+    #once the game has started, send the server the normalised direction the player wishes to move in, and receive the game data in return. This will then be used to draw the game
     
     
     def preGameUpdate(self):
@@ -35,7 +37,6 @@ class Client:
         run = True
         clock = pygame.time.Clock()
 
-        print("You are player")
 
         while run:
             clock.tick(60)
