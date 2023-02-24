@@ -4,7 +4,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 
 import pygame as pg
-from client.ui.menu import Menu
+import client.ui.screens as screens
 
 # design a pygame window, and set the window title as pyBall
 pg.init()
@@ -18,18 +18,39 @@ clock = pg.time.Clock()
 def main():
     running = True
     focus = "Menu"
-    menu = Menu(screen)
+    newFocus= "Menu"
+    current = screens.Menu(screen)
     while running:
-        # set the maximum FPS
         clock.tick(60)
+        if focus != newFocus:
+            if newFocus != "Exit":
+                focus = newFocus
+                current = getattr(screens,newFocus)(screen)
+            else:
+                running = False
+                pg.quit()
+                sys.exit()
+
+        info = {
+            "mouse" : pg.mouse.get_pos(),
+            "events" : pg.event.get(),
+            "focus" : focus
+            }
+        # set the maximum FPS
+        
         
         # get all the events
-        for event in pg.event.get():
+        for event in info["events"]:
             # if the event is to quit the game, then set running as False
             if event.type == pg.QUIT:
                 running = False
         
-        menu.render()
+        output = current.main(info)
+        if output != None:
+            newFocus = output
+
+
+
         pg.display.flip()
             
         
