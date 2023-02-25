@@ -32,13 +32,7 @@ class Ball(pg.sprite.Sprite):
 
 
         #physics variables
-        self.staticValue = True
-        self.velocity = pg.math.Vector2(0,0)
-        self.mass = 1
-        self.inverseMass = 1/self.mass
-        self.restitution = 0.5
-        self.damping = 0.99
-
+     
 
 
         #assigns the image and rect attributes to the ball
@@ -46,7 +40,7 @@ class Ball(pg.sprite.Sprite):
         self.image = pg.Surface((self.w,self.h),pg.SRCALPHA)
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
         self.renderGraphics()
-        self.mask = pg.mask.from_surface(self.image)
+        
         
     #renders the ball, and updates the mask
     def render(self):
@@ -65,16 +59,6 @@ class Ball(pg.sprite.Sprite):
         pg.draw.circle(self.image,(0,0,0),(self.w//2,self.h//2),((self.w//2)))
         pg.draw.circle(self.image,(255,255,255),(self.h//2,self.h//2),(0.915*(self.w//2)))
 
-    def updatePhysics(self):
-        if self.staticValue:
-            self.position  +=  self.velocity
-            self.velocity *= self.damping
-
+  
 
         
-
-    def reset(self):
-        self.position = self.initialPosition.copy()
-        self.velocity = pg.math.Vector2(0,0)
-
-

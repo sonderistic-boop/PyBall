@@ -148,3 +148,159 @@ class InputButton(Button):
         self.textColour = (128,128,128,255)
 
   
+
+
+
+#make a drop down button, which is a button that when clicked, opens a dropdown menu, where option from a list are displayed. If the user clicks on one of the options, the button text is changed to the option that was clicked
+class DropdownButton(Button):
+    def __init__(self,surface,pos,size,optionList):
+        super().__init__(surface,pos,size,(128,128,128,255))
+        self.borderColour = (0,0,0,150)
+        self.alternateColour = (180,180,180,255)
+        self.trigger = False
+        
+        self.selectedOption = self.optionList[0]
+        self.textColour = (128,128,128,255)
+        self.textSize = 20
+        self.optionButtons = {}
+        for i in optionList:
+            self.optionButtons[i] = MenuButton(self.surface,(self.position[0],self.position[1]+self.get),(self.size[0],self.size[1]),i,str(i))
+    
+    def eventHandler(self,info):
+
+        if self.rect.collidepoint((info["mouse"])):
+            self.onHover()
+            for event in info["events"]:
+                
+                match event.type:
+                    case pg.MOUSEBUTTONDOWN:
+                        if self.trigger:
+                            for i in self.optionButtons:
+                                option = self.optionButtons[i].eventHandler(info)
+                                if option != None:
+                                    #swap places of selected option and option
+                                    
+                                    self.onClick()
+        else:
+            self.onLeave()
+        
+    def onClick(self):
+        if self.trigger == False:
+            self.trigger = True
+            self.onTrigger()
+        else:
+            self.trigger = False
+            self.onTriggerExit()
+    
+
+  
+
+
+
+
+
+
+class ListButton(Button):
+    def __init__(self,surface,pos,size,list):
+        super().__init__(surface,pos,size,(150,150,150,255))
+        self.borderColour = (0,0,0,150)
+        self.list = {}
+        self.trigger = False
+        for i in list:
+            self.list[i] = ListItemButton(self.surface,(self.position[0],self.position[1]+60),(self.size[0],self.size[1]),i)
+        
+
+        
+
+
+
+        self.textColour = (255,255,255,255)
+        self.textSize = 9
+
+    def eventHandler(self,info):
+        for i in self.list:
+            self.list[i].eventHandler(info)
+        
+    def render(self):
+        self.image.fill((128,128,128,128))
+        #draw the text in the list
+        self.surface.blit(self.image,(self.position[0],self.position[1]))
+        for i in self.list:
+            self.list[i].render()
+        
+
+    def removeItem(self,item):
+        if item in self.list:
+            self.list.remove(item)
+    
+    def addItem(self,item):
+        if item not in self.list:
+            self.list.append(item)
+    
+    def clearList(self):
+        self.list = []
+    
+
+class InfoButton(Button):
+    def __init__(self,surface,pos,size,info):
+        super().__init__(surface,pos,size,(0,0,0,255))
+        self.info = info
+        self.textColour = (255,255,255,255)
+        self.textSize = 9
+
+    def render(self):
+        self.image.fill(self.colour)
+        #draw the info text
+        if self.info != "":
+            font = pg.font.SysFont("Arial",self.textSize)
+            text = font.render(self.info,1,self.textColour)
+            self.image.blit(text,(0,0))
+    
+        self.surface.blit(self.image,(self.position[0],self.position[1]))
+
+
+class ListItemButton(Button):
+    def __init__(self,surface,pos,size,text):
+        super().__init__(surface,pos,size,(180,180,180,255))
+        self.text = text
+
+    def eventHandler(self,info):
+            for event in info["events"]:
+                match event.type:
+                    case pg.MOUSEBUTTONDOWN:
+                        #if mouse click and mouseposition in rect
+                        self.onClick(info)
+
+                    
+
+    def onClick(self,info):
+        if self.rect.collidepoint(info["mouse"]):
+             if self.trigger == False:
+                self.trigger = True
+                self.onTrigger()
+                return self.text
+        
+        else:
+            if self.trigger:
+                self.trigger = False
+                self.onTriggerExit()
+
+
+    def onTrigger(self):
+        self.colour = (200,200,200,255)
+       
+    
+    def onTriggerExit(self):
+        self.colour = (180,180,180,255)
+
+    def render(self):
+        self.image.fill(self.colour)
+        #draw the text in the list
+        font = pg.font.SysFont("Arial",self.textSize)
+        text = font.render(self.text,1,self.textColour)
+        self.image.blit(text,(0,0))
+        
+        self.surface.blit(self.image,(self.position[0],self.position[1]))
+       
+
+        

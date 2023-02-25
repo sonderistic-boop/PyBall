@@ -28,7 +28,7 @@ class pyBallServer:
         #admin can change any clients team, this request will take precedent over any other.
         #when joining, client will send their name, and receive, their stuff
         
-        self.gamesettings = {
+        self.gameSettings = {
             "stadium" : "smallStadium",
             "time" : 300,
             "maxScore": 3 
@@ -63,7 +63,9 @@ class pyBallServer:
 
     def newClient(self,connection, address):
         
-        player = connection.recv(4096).decode() 
+        player = connection.recv(4096)
+        player = pickle.loads(player)
+        
         
         self.players["neutral"][str(player)] = {"address": address}
         adminPrivilege = True
@@ -84,13 +86,13 @@ class pyBallServer:
         
         
         while True:
-            print(player)
             
-            match self.TransferMode:
+            
+            match self.transferMode:
                 
                 case "lobby":
                     try:
-                        receivingDataLoad = connection.recv(4096).decode()
+                        receivingDataLoad = connection.recv(4096)
                         receivingData = pickle.loads(receivingDataLoad) 
 
                     except:
@@ -112,7 +114,9 @@ class pyBallServer:
                         if "transferMode" in receivingData:
                             if receivingData["transferMode"] == "game":
                                 self.transferMode = receivingData["transferMode"]
+                                sendingDataLoad["transferMode"] = self.transferMode
                                 self.game = gameMultiplayer.Game(self.players,self.gameSettings["time"],self.gameSettings["maxScore"],self.gameSettings["stadium"])
+                                sendingDataLoad["gameData"] = self.game.getData()
 
 
 
@@ -120,9 +124,10 @@ class pyBallServer:
 
                     data = receivingDataLoad.copy()
                     #new initial data
-                    sendingDataLoad = pickle.dumps({"gameSettings" : self.gameSettings,
-                                                   "players" : self.players
-                                                  })
+                    if self.transferMode != "game":
+                        sendingDataLoad["gameSettings"] = self.gameSettings
+                        sendingDataLoad["players"] = self.players
+                    sendingDataLoad = pickle.dumps(sendingDataLoad)
                     connection.send(sendingDataLoad)
                     #send data
                     
@@ -130,7 +135,7 @@ class pyBallServer:
                 case "game":
                     #if game, then try and receuve
                     try:
-                        receivingDataLoad = connection.recv(4096).decode()
+                        receivingDataLoad = connection.recv(4096)
                         receivingData = pickle.loads(receivingDataLoad) 
                     except:
                         break

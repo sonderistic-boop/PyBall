@@ -5,6 +5,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 import pygame as pg
 import client.ui.screens as screens
+from client.client import Client
 
 # design a pygame window, and set the window title as pyBall
 pg.init()
@@ -23,13 +24,22 @@ def main():
     while running:
         clock.tick(60)
         if focus != newFocus:
-            if newFocus != "Exit":
-                focus = newFocus
-                current = getattr(screens,newFocus)(screen)
-            else:
-                running = False
-                pg.quit()
-                sys.exit()
+            match newFocus:
+                case newFocus if newFocus != "Exit" and isinstance(newFocus,str):
+                    focus = newFocus
+                    current = getattr(screens,newFocus)(screen)
+                case "Exit":
+                    running = False
+                    pg.quit()
+                    sys.exit()
+                case newFocus if newFocus[1] == "Game":
+
+                    current = screens.GameLobby(screen)
+                    #if not others, then must be containing gamesettings as well as the checker from joinGame
+                    focus = newFocus[1]
+                    #current = Client(screen,{"name" : newFocus[0]["username"],"team" : "neutral"},newFocus[0]["serverIp"],newFocus[0]["port"])
+                    #newFocus = newFocus[1]
+            
 
         info = {
             "mouse" : pg.mouse.get_pos(),

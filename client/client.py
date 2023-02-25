@@ -4,9 +4,13 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 
 import pygame
+import socket
+import pickle
 
 from server.network import Network
-import pickle
+from client.ui.screens import GameLobby
+from gameClient.game import Game
+
 #pygame.font.init()
 
 width = 700
@@ -17,37 +21,70 @@ height = 700
 
 
 
+"""
+sendingData = {
+    "team" : userinfo["team"],
 
+}
+"""
 
 class Client:
-    def __init__(self,serverIp,screen,info,userinfo):
-        self.serverIp = serverIp
-        self.networkInterface = Network(self.serverIp)
+    def __init__(self,screen,userinfo,serverIp,port=5555):
+        self.serverIp = input("Server IP: ")
+        self.port = 5555
+
+        self.transferMode = "lobby"
+        self.focus = "GameLobby"
+        self.newFocus = "GameLobby"
+        self.current = GameLobby(screen,userinfo)
+
+        self.networkInterface = Network(self.serverIp,self.port,userinfo["name"])
+        self.screen = screen
+        self.userinfo = userinfo
+        self.sendingData = { "team" : self.userinfo["team"] }
+
+
+        
+        
         
 
     #at the start, send username to the server, receive data in return, which will be used to edit lobby. When the server says that the game has started, start the game and start looping that
     #once the game has started, send the server the normalised direction the player wishes to move in, and receive the game data in return. This will then be used to draw the game
-    
-    
-    def preGameUpdate(self):
-        print("nice")
-      
+ 
+    def main(self):
+        if self.focus != self.newFocus:
+            match self.newFocus:
+                case "GameLobby":
+                    self.focus = self.newFocus
+                    self.transferMode = "lobby"
+                    self.current = GameLobby(self.screen,self.userinfo)
+                case "Game":
+                    self.focus = self.newFocus
+                    self.transferMode = "game"
+                    self.current = Game(self.screen,self.userinfo)
 
-    def clientMain(self):
-        run = True
-        clock = pygame.time.Clock()
+
+                
+        match self.transferMode:
+            case "lobby":
+                self.sendingData = self.current.getData()
+                #if lobby, send a dictionary with the team the player wishes to be on. This value changes when the player changes it in the lobby, if the player is the admin, they can change any players team
+                ReceivingDataLoad = self.networkInterface.sendData(self.sendingData)
+                self.current.main(ReceivingDataLoad)
+                if "transferMode" in ReceivingDataLoad:
+                    if ReceivingDataLoad["transferMode"] == "game":
+                        self.newFocus = "Game"
+
+                
 
 
-        while run:
-            clock.tick(60)
-            try:
-                game = self.networkInterface.send("get")
-            except Exception as wow:
-                print(wow)
-                run = False
-                print("Couldn't get game")
-                break
+            case "game":
+                #data transfer shenanigans
+                self.game()
 
-newclient = Client("localhost")
-while True:
-    newclient.clientMain()
+            
+            
+
+#newclient = Client("localhost","damn","sonderistic")
+#while True:
+#    newclient.main()

@@ -2,16 +2,7 @@ import pygame as pg
 import pygame.gfxdraw as gfxdraw
 
 #this is a dictionary of colours, the keys are the names of the colours, and the values are the hex codes of the colours
-themeColours = {
-    "red" : "#d14242",
-    "green" : "#52d142",
-    "blue" : "#426ad1",
-    "yellow" : "#e1c16e",
-    "cyan" : "#03b9b9",
-    "magenta" : "#674ea7",
-    "orange" : "#e69138"
-
-}
+import shared.themeColours as themeColours
 #when assigning  team parameter, make  sure you do  so in all caps, also positon should be a tuple
 
 #typical haxball player has 30 diameter, 50 for the outer, 
@@ -38,14 +29,7 @@ class Pawn(pg.sprite.Sprite):
 
 
         #physics variables
-        self.staticValue = True
-        self.velocity = pg.math.Vector2(0,0)
-        self.maxVelocity =5
-        self.mass = 2
-        self.inverseMass = 1/self.mass
-        self.restitution = 0.5
-        self.acceleration = 0.1
-        self.damping = 0.96
+        
         
 
         #assigns the image and rect attributes to the sprite
@@ -53,7 +37,6 @@ class Pawn(pg.sprite.Sprite):
         self.image = pg.Surface((self.w,self.h),pg.SRCALPHA)
         self.rect = self.image.get_rect(topleft = (position[0],position[1]))
         self.renderGraphics()
-        self.mask = pg.mask.from_surface(self.image)
 
 
         
@@ -79,37 +62,14 @@ class Pawn(pg.sprite.Sprite):
         pg.draw.circle(self.image,self.colour,(self.h//2,self.h//2),(0.55*(self.w//2)))
 
 
-    def updatePhysics(self):
-        if self.staticValue:
-            self.constrainvelocity()
-            #self.wallcollide()
-            self.position  +=  self.velocity
-            self.velocity *= self.damping
+  
 
-    def wallcollide(self):
-        if self.position[0] < 0:
-            self.position[0] = 0
-            self.velocity[0] *= -1
-        if self.position[0] > 1200 - self.w:
-            self.position[0] = 1200 - self.w
-            self.velocity[0] *= -1
-        if self.position[1] < 0:
-            self.position[1] = 0
-            self.velocity[1] *= -1
-        if self.position[1] > 600 - self.h:
-            self.position[1] = 600 - self.h
-            self.velocity[1] *= -1
 
     #constrains the velocity of the pawn to the max velocity
-    def constrainvelocity(self):
-        self.velocity.scale_to_length(5) if self.velocity.magnitude() > self.maxVelocity else None
-
+ 
 
     #resets the pawn to its initial position
-    def reset(self):
-        self.position = self.initialPosition.copy()
-        self.velocity = pg.math.Vector2(0,0)
-
+   
 
 
 

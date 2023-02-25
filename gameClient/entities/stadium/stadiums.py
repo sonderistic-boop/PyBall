@@ -1,8 +1,8 @@
 #standard stadiums should be 24  pawns wide
 import pygame as pg
-from entities.stadium.line import Line
-from entities.stadium.goal.goal import collidingGoal
-from entities.stadium.goal.goal import Goal
+from gameClient.entities.stadium.line import Line
+from gameClient.entities.stadium.goal.goal import collidingGoal
+from gameClient.entities.stadium.goal.goal import Goal
 
 tiles = {
     "field" : pg.transform.scale((pg.image.load("./shared/assets/tiles/fieldtiles/fieldtile.png")),(300,300))
