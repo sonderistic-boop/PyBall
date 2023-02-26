@@ -42,7 +42,7 @@ class Client:
         self.screen = screen
         self.userinfo = userinfo
         self.sendingData = { "team" : self.userinfo["team"] }
-
+        self.receivingData = None
 
         
         
@@ -61,7 +61,8 @@ class Client:
                 case "Game":
                     self.focus = self.newFocus
                     self.transferMode = "game"
-                    self.current = Game(self.screen,self.userinfo)
+                    #FIX THIS LATER-------------------------------------------------------------------------------------------------------------------------------============
+                    self.current = Game(self.screen,self.initialGameData["gameSettings"][]
 
 
                 
@@ -75,6 +76,7 @@ class Client:
                 if "transferMode" in ReceivingDataLoad:
                     if ReceivingDataLoad["transferMode"] == "game":
                         self.newFocus = "Game"
+                        self.initialGameSettings = ReceivingDataLoad["gameSettings"].copy()
                         return
                 self.current.main(info,ReceivingDataLoad)
 

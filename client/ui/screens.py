@@ -306,7 +306,7 @@ class GameLobby(Menu):
         
         if self.datatoSend != {}:
             for data in self.datatoSend:
-                sendingData[data] = self.datatoSend[data].copy()
+                sendingData[data] = self.datatoSend[data]
             self.datatoSend = {}
         return sendingData
 

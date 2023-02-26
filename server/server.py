@@ -133,7 +133,7 @@ class pyBallServer:
                     data = receivingData.copy()
 
                     #new initial data
-                    if self.transferMode != "game":
+                    if self.transferMode != None:
                         sendingData["gameSettings"] = self.gameSettings
                         sendingData["players"] = self.players
                     sendingDataLoad = pickle.dumps(sendingData)
@@ -159,8 +159,10 @@ class pyBallServer:
 
                     data = receivingDataLoad.copy()
 
-                    
-                    sendingDataLoad = pickle.dumps(self.game.getData())
+                    sendingData = {"gameData" : self.game.getData(),
+                                      "transferMode" : self.transferMode
+                                     }
+                    sendingDataLoad = pickle.dumps(sendingData)
 
 
                     connection.send(sendingDataLoad)

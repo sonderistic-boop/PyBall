@@ -47,7 +47,7 @@ class Game():
         #load game surface, load players, load ball, load stadium
         
 
-        self.screen = pg.Surface((self.size),pg.SRCALPHA)
+        self.screen = pg.Surface((1600,950),pg.SRCALPHA)
         
         self.stadium = getattr(stadiums,stadium)
         self.stadium = self.stadium(self.screen,(100,100),[self.colours["team1"],self.colours["team2"]])
@@ -56,11 +56,25 @@ class Game():
         self.ball = Ball(self.screen,(self.stadium.bounds["middle"][0],self.stadium.bounds["middle"][1]),(30,30))
         
         #load players, and add them to the left and right team dictionaries. initial position will be the middle-left of the stadium for the left team, and the middle-right of the stadium for the right team
-        for i in players["team1"]:
-            self.team1[i] = Pawn(i,self.colours["team1"],False,self.screen,(400,400),(70.3,70.3))          
+        for index,player in enumerate(players["team1"]):
+            self.team1[player] = Pawn(player,self.colours["team1"],False,self.screen,
+                                      (self.stadium.bounds["x1"]+200,(self.stadium.bounds["y1"]+30)+(index*75)),
+                                      (70.3,70.3))
+
+            #set the initial position of the player to the middle-left of the stadium, depending on the number of players on the team and the size of the stadium starting from the middle
+
+
+
+            #self.team1[i] = Pawn(i,self.colours["team1"],False,self.screen,(),(70.3,70.3))          
         
-        for i in players["team2"]:
-            self.team2[i] = Pawn(i,self.colours["team2"],False,self.screen,(400,400),(70.3,70.3))   
+        for index,player in enumerate(players["team2"]):
+            self.team2[player] = Pawn(player,self.colours["team2"],False,self.screen,
+                                      (self.stadium.bounds["x2"]-200,(self.stadium.bounds["y1"]+30)+(index*75)),
+                                      (70.3,70.3))
+
+            #set the initial position of the player to the middle-right of the stadium, depending on the number of players on the team and the size of the stadium starting from the middle
+
+            #self.team2[i] = Pawn(i,self.colours["team2"],False,self.screen,(),(70.3,70.3)) 
 
         
         
