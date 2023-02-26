@@ -199,17 +199,23 @@ class JoinGame(Menu):
 
 
 class GameLobby(Menu):
-    def __init__(self,surface):
+    def __init__(self,surface,clientSettings):
         self.surface = surface
         self.background = pg.transform.scale((pg.image.load("./shared/assets/background/background.png")),(120,120))
         self.backgroundX = []
+        self.clientSettings = clientSettings
+
         
         for i in range(-120,self.surface.get_width()+120,120):
             self.backgroundX.append(i)
         
         self.buttons = {}
-        self.buttons["Start"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),700),(200,50),"Start","startGame")
-        self.buttons["team1list"] = ListButton(self.surface,(((50),100)),(200,500),["Player1","Player2","Player3","Player4","Player5","Player6","Player7","Player8","Player9","Player10"])
+        self.buttons["Start"] = MenuButton(self.surface,((self.surface.get_width()-350),800),(200,50),"Start","startGame")
+        self.lists = {}
+        self.lists["team1"] = ListButton(self.surface,((400,175)),(200,500),[])
+        self.lists["team2"] = ListButton(self.surface,(((self.surface.get_width()-600),175)),(200,500),[])
+        self.lists["neutral"] = ListButton(self.surface,(((self.surface.get_width()/2)-100),175),(200,500),[self.clientSettings["name"]])
+        self.datatoSend = {}
 
 
         self.texts = {
@@ -217,26 +223,27 @@ class GameLobby(Menu):
                     "text":"Red Team:",
                     "textColour":(255,255,255),
                     "font" : "Arial",
-                    "position" : (50,50),
+                    "position" : (400,125),
                     "textSize" : 30
                     },
             "team2" : {
                     "text":"Blue Team:",
                     "textColour":(255,255,255),
                     "font" : "Arial",
-                    "position" : (self.surface.get_width()-200,50),
+                    "position" : (self.surface.get_width()-600,125),
                     "textSize" : 30
                     },
             "neutral" : {
                     "text":"Neutral:",
                     "textColour":(255,255,255),
                     "font" : "Arial",
-                    "position" : (self.surface.get_width()/2-50,50),
+                    "position" : ((self.surface.get_width()/2)-100,125),
                     "textSize" : 30
             }
         }   
 
     def renderSlidingBackground(self):
+
         for i in range(0,len(self.backgroundX)):
             if self.backgroundX[i] <= -120:
                 self.backgroundX[i] = self.surface.get_width() + 120
@@ -245,6 +252,19 @@ class GameLobby(Menu):
                 self.surface.blit(self.background,(self.backgroundX[i],j))
                 
             self.backgroundX[i] -= 1
+    
+    def eventHandler(self,info):
+        for button in self.buttons:
+            checker = self.buttons[button].eventHandler(info)
+            if checker == "startGame":
+                self.datatoSend["transferMode"] = "game"
+        for listButton in self.lists:
+            checker = self.lists[listButton].eventHandler(info,self.lists)
+            if checker != None:
+                print(checker)
+                return checker
+        
+            
 
     
 
@@ -255,10 +275,15 @@ class GameLobby(Menu):
             self.surface.blit(rendertext,(self.texts[text]["position"]))
 
     def renderButtons(self):
-        return super().renderButtons()
+        for button in self.buttons:
+            self.buttons[button].render()
+        for listButton in self.lists:
+            self.lists[listButton].render()
+
 
     def render(self):
         self.renderSlidingBackground()
+        
         s = pg.Surface((self.surface.get_width()-200,self.surface.get_height()-200))
         s.set_alpha(220)                
         s.fill((0,0,0))
@@ -267,7 +292,30 @@ class GameLobby(Menu):
 
         self.renderButtons()
     
+    def updateLists(self,newLists):
+        for listButton in self.lists:
+            self.lists[listButton].updateItems(newLists[listButton])
 
-    def main(self,info="ya",serverInfo="ya"):
+    def getData(self):
+        sendingData = {}
+        # gets the team of the player who matches the username in the client settings
+        for team in self.lists:
+            for player in self.lists[team].list:
+                if player == self.clientSettings["name"]:
+                    sendingData["team"] = team
+        
+        if self.datatoSend != {}:
+            for data in self.datatoSend:
+                sendingData[data] = self.datatoSend[data].copy()
+            self.datatoSend = {}
+        return sendingData
+
+        
+
+    def main(self,info,receivingData):
+        #receivingData will contain a "players" key which contains a "team1", "team2" and "neutral" key
+        
+        self.updateLists(receivingData["players"])
+        self.eventHandler(info)
         self.render()
         

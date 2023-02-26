@@ -25,6 +25,12 @@ def main():
         clock.tick(60)
         if focus != newFocus:
             match newFocus:
+                case newFocus if newFocus[1] == "Game":
+                    #if not others, then must be containing gamesettings as well as the checker from joinGame
+                    focus = newFocus[1]
+                    
+                    current = Client(screen,{"name" : newFocus[0]["username"],"team" : "neutral"},newFocus[0]["ip"],newFocus[0]["port"])
+                    newFocus = newFocus[1]
                 case newFocus if newFocus != "Exit" and isinstance(newFocus,str):
                     focus = newFocus
                     current = getattr(screens,newFocus)(screen)
@@ -32,13 +38,7 @@ def main():
                     running = False
                     pg.quit()
                     sys.exit()
-                case newFocus if newFocus[1] == "Game":
-
-                    current = screens.GameLobby(screen)
-                    #if not others, then must be containing gamesettings as well as the checker from joinGame
-                    focus = newFocus[1]
-                    #current = Client(screen,{"name" : newFocus[0]["username"],"team" : "neutral"},newFocus[0]["serverIp"],newFocus[0]["port"])
-                    #newFocus = newFocus[1]
+                
             
 
         info = {

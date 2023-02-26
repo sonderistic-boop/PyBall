@@ -30,7 +30,7 @@ sendingData = {
 
 class Client:
     def __init__(self,screen,userinfo,serverIp,port=5555):
-        self.serverIp = input("Server IP: ")
+        self.serverIp = serverIp
         self.port = 5555
 
         self.transferMode = "lobby"
@@ -51,7 +51,7 @@ class Client:
     #at the start, send username to the server, receive data in return, which will be used to edit lobby. When the server says that the game has started, start the game and start looping that
     #once the game has started, send the server the normalised direction the player wishes to move in, and receive the game data in return. This will then be used to draw the game
  
-    def main(self):
+    def main(self,info):
         if self.focus != self.newFocus:
             match self.newFocus:
                 case "GameLobby":
@@ -69,11 +69,14 @@ class Client:
             case "lobby":
                 self.sendingData = self.current.getData()
                 #if lobby, send a dictionary with the team the player wishes to be on. This value changes when the player changes it in the lobby, if the player is the admin, they can change any players team
+                print("sending data: ",self.sendingData)
                 ReceivingDataLoad = self.networkInterface.sendData(self.sendingData)
-                self.current.main(ReceivingDataLoad)
+                
                 if "transferMode" in ReceivingDataLoad:
                     if ReceivingDataLoad["transferMode"] == "game":
                         self.newFocus = "Game"
+                        return
+                self.current.main(info,ReceivingDataLoad)
 
                 
 

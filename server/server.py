@@ -8,6 +8,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 import socket
 import pickle
+from ast import literal_eval
 from _thread import *
 from network import get_ip
 import gameMultiplayer.game as gameMultiplayer
@@ -48,6 +49,7 @@ class pyBallServer:
         try:
             self.serverSocket.bind((self.serverIP, self.port))
         except socket.error as e:
+
             str("Error")
 
 
@@ -72,10 +74,10 @@ class pyBallServer:
         data = {"team" : "neutral"}
         
         
-        
-        sendingDataLoad = pickle.dumps({"gameSettings" : self.gameSettings,
-                                       "players" : self.players
-                                      })
+        sendingData = {"gameSettings" : self.gameSettings,
+                       "players" : self.players
+                      }
+        sendingDataLoad = pickle.dumps(sendingData)
         connection.send(sendingDataLoad)
         
         
@@ -92,10 +94,16 @@ class pyBallServer:
                 
                 case "lobby":
                     try:
+                        #error occurs here, receivingData
                         receivingDataLoad = connection.recv(4096)
-                        receivingData = pickle.loads(receivingDataLoad) 
+                        
+                        receivingData = pickle.loads(receivingDataLoad)
+                    
+                        
+                        
 
-                    except:
+                    except Exception as e:
+                        print(e)
                         break
 
                     if receivingData["team"] != data["team"]:
@@ -114,20 +122,21 @@ class pyBallServer:
                         if "transferMode" in receivingData:
                             if receivingData["transferMode"] == "game":
                                 self.transferMode = receivingData["transferMode"]
-                                sendingDataLoad["transferMode"] = self.transferMode
+                                sendingData["transferMode"] = self.transferMode
                                 self.game = gameMultiplayer.Game(self.players,self.gameSettings["time"],self.gameSettings["maxScore"],self.gameSettings["stadium"])
-                                sendingDataLoad["gameData"] = self.game.getData()
+                                sendingData["gameData"] = self.game.getData()
 
 
 
 
 
-                    data = receivingDataLoad.copy()
+                    data = receivingData.copy()
+
                     #new initial data
                     if self.transferMode != "game":
-                        sendingDataLoad["gameSettings"] = self.gameSettings
-                        sendingDataLoad["players"] = self.players
-                    sendingDataLoad = pickle.dumps(sendingDataLoad)
+                        sendingData["gameSettings"] = self.gameSettings
+                        sendingData["players"] = self.players
+                    sendingDataLoad = pickle.dumps(sendingData)
                     connection.send(sendingDataLoad)
                     #send data
                     

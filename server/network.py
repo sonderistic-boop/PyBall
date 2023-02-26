@@ -9,6 +9,7 @@ class Network:
         self.port = 5555
         self.address = (self.serverIp, self.port)
         self.initialData = self.initialConnect(initialData)
+        print(self.initialData)
 
     def getInitData(self):
         return self.initialData
@@ -18,6 +19,7 @@ class Network:
             
             self.client.connect(self.address)
             self.client.send(pickle.dumps(data))
+            
             return pickle.loads(self.client.recv(4096))
         except:
             pass

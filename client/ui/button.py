@@ -88,7 +88,7 @@ class MenuButton(Button):
      
         
     def onClick(self):
-        print(self.redirect)
+        
         return self.redirect
     
     
@@ -205,9 +205,9 @@ class ListButton(Button):
         super().__init__(surface,pos,size,(150,150,150,255))
         self.borderColour = (0,0,0,150)
         self.list = {}
-        self.trigger = False
+        self.itemSelected = "None"
         for i in list:
-            self.list[i] = ListItemButton(self.surface,(self.position[0],self.position[1]+60),(self.size[0],self.size[1]),i)
+            self.list[i] = ListItemButton(self.surface,(self.position[0],self.position[1]+(list.index(i)*25)),(self.size[0],25),i)
         
 
         
@@ -216,10 +216,23 @@ class ListButton(Button):
 
         self.textColour = (255,255,255,255)
         self.textSize = 9
+    
+    def eventHandler(self,info,lists):
+        try:
+            for i in self.list:
+                checker = self.list[i].eventHandler(info,lists)
+                
+                
+                
+                if checker != None:
+                    self.itemSelected = checker
+        except:
+            pass
+            
+            
+            
+            
 
-    def eventHandler(self,info):
-        for i in self.list:
-            self.list[i].eventHandler(info)
         
     def render(self):
         self.image.fill((128,128,128,128))
@@ -228,17 +241,130 @@ class ListButton(Button):
         for i in self.list:
             self.list[i].render()
         
+        
 
+    def updateItems(self,newList):
+        print("oldlist ", list(self.list.keys()))
+        print("newlist ", list(newList.keys()))
+        if list(newList.keys()) != list(self.list.keys()):
+            print("updating")
+            self.list = {}
+            
+            
+            
+            for player in newList:
+                self.list[player] = ListItemButton(self.surface,(self.position[0],self.position[1]+(list(newList.keys()).index(player)*25)),(self.size[0],25),player)
+        
+        for index, item in enumerate(self.list):
+            self.list[item].position = (self.position[0],self.position[1]+(index*self.list[item].size[1]))
+            self.list[item].rect = self.list[item].image.get_rect(topleft = (self.list[item].position[0],self.list[item].position[1]))
     def removeItem(self,item):
         if item in self.list:
-            self.list.remove(item)
+            self.list.pop(item)
     
     def addItem(self,item):
         if item not in self.list:
-            self.list.append(item)
+            self.list[item] = ListItemButton(self.surface,(self.position[0],self.position[1]+(len(self.list)*25)),(self.size[0],25),item)
+    
+    def transferItem(self,item,destinationList):
+        if item in self.list:
+            self.removeItem(item)
+            destinationList.addItem(item)
     
     def clearList(self):
         self.list = []
+
+#when an item in the list is clicked, the trigger is on, and the item can move to another list that is clicked on
+
+
+class ListItemButton(Button):
+    def __init__(self,surface,pos,size,text):
+        super().__init__(surface,pos,size,(180,180,180,255))
+        self.text = text
+        self.trigger = False
+
+    def eventHandler(self,info,lists):
+        if self.trigger == False:
+            if self.rect.collidepoint((info["mouse"])):
+                
+                self.onHover()
+            else:
+                self.onLeave()
+
+        for event in info["events"]:
+            match event.type:
+                case pg.MOUSEBUTTONDOWN:
+                        
+                    if self.rect.collidepoint(info["mouse"]):
+                        return self.onClick(info,lists)
+                            
+                    else:
+                         #if the trigger is on, and the mouse is not on the current list and also not in blank space, then the item is transferred from its list and moved to the list that the mouse is on
+                        if self.trigger:
+                            for i in lists:
+                                if self.text in lists[i].list:
+                                    parentList = lists[i]
+                            for i in lists:
+                                if lists[i].rect.collidepoint(info["mouse"]):
+                                    if lists[i] != parentList:
+                                        parentList.transferItem(self.text,lists[i])
+                                        self.trigger = False
+                                        self.onTriggerExit()
+                                        return "None"
+                                    else:
+                                        self.trigger = False
+                                        self.onTriggerExit()
+                                        return "None"
+                                        
+                                        
+        
+
+                    
+
+    def onClick(self,info,lists):
+        #lists is a dictionary with references to all the lists
+        if self.rect.collidepoint(info["mouse"]):
+             if self.trigger == False:
+                self.trigger = True
+                return self.onTrigger()
+                
+        
+        else:
+            if self.trigger:
+                self.trigger = False
+                return self.onTriggerExit()
+        
+
+
+    def onTrigger(self):
+        self.colour = (200,200,200,255)
+        return self.text
+
+       
+    
+    def onTriggerExit(self):
+        self.colour = (180,180,180,255)
+        return "None"
+
+    def render(self):
+        self.image.fill(self.colour)
+        #draw the text in the list
+        font = pg.font.SysFont("Arial",self.textSize)
+        text = font.render(self.text,1,self.textColour)
+        self.image.blit(text,(0,0))
+        
+        self.surface.blit(self.image,(self.position[0],self.position[1]))
+        
+    
+    def onHover(self):
+        self.colour = (255,150,200,255)
+        
+
+    def onLeave(self):
+        self.colour = (180,180,180,255)
+       
+
+        
     
 
 class InfoButton(Button):
@@ -259,48 +385,3 @@ class InfoButton(Button):
         self.surface.blit(self.image,(self.position[0],self.position[1]))
 
 
-class ListItemButton(Button):
-    def __init__(self,surface,pos,size,text):
-        super().__init__(surface,pos,size,(180,180,180,255))
-        self.text = text
-
-    def eventHandler(self,info):
-            for event in info["events"]:
-                match event.type:
-                    case pg.MOUSEBUTTONDOWN:
-                        #if mouse click and mouseposition in rect
-                        self.onClick(info)
-
-                    
-
-    def onClick(self,info):
-        if self.rect.collidepoint(info["mouse"]):
-             if self.trigger == False:
-                self.trigger = True
-                self.onTrigger()
-                return self.text
-        
-        else:
-            if self.trigger:
-                self.trigger = False
-                self.onTriggerExit()
-
-
-    def onTrigger(self):
-        self.colour = (200,200,200,255)
-       
-    
-    def onTriggerExit(self):
-        self.colour = (180,180,180,255)
-
-    def render(self):
-        self.image.fill(self.colour)
-        #draw the text in the list
-        font = pg.font.SysFont("Arial",self.textSize)
-        text = font.render(self.text,1,self.textColour)
-        self.image.blit(text,(0,0))
-        
-        self.surface.blit(self.image,(self.position[0],self.position[1]))
-       
-
-        
