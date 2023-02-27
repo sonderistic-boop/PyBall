@@ -56,7 +56,7 @@ def main():
                 running = False
         
         output = current.main(info)
-        if output != None:
+        if output is not None:
             newFocus = output
 
 

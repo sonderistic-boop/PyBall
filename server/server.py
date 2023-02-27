@@ -8,7 +8,6 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 import socket
 import pickle
-from ast import literal_eval
 from _thread import *
 from network import get_ip
 import gameMultiplayer.game as gameMultiplayer
@@ -160,7 +159,7 @@ class pyBallServer:
                     data = receivingDataLoad.copy()
 
                     sendingData = {"gameData" : self.game.getData(),
-                                      "transferMode" : self.transferMode
+                                   "transferMode" : self.transferMode
                                      }
                     sendingDataLoad = pickle.dumps(sendingData)
 
@@ -169,16 +168,21 @@ class pyBallServer:
                         
  
         print("Lost connection")
-        try:
-            print("deleting", player)
-            del self.players[data["team"]][str(player)]
-            del self.game.players[data["team"]][str(player)]
-            del getattr(self.game, data["team"])[str(player)]
-            del self.game.playerGroup[str(player)]
-
+        print("deleting", player)
+        deletionSequence = [self.players[data["team"]][str(player)],
+                            self.game.players[data["team"]][str(player)],
+                            getattr(self.game, data["team"])[str(player)],
+                            self.game.playerGroup[str(player)]
+                            ]
         
-        except:
-            pass
+        for command in deletionSequence:
+            try:
+                del command
+            except:
+                continue
+        
+        
+
         connection.close()
 
 

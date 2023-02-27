@@ -3,7 +3,7 @@ from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 
-import pygame
+import pygame as pg
 import socket
 import pickle
 
@@ -62,7 +62,7 @@ class Client:
                     self.focus = self.newFocus
                     self.transferMode = "game"
                     #FIX THIS LATER-------------------------------------------------------------------------------------------------------------------------------============
-                    self.current = Game(self.screen,self.initialGameData["gameSettings"][]
+                    self.current = Game(self.screen,self.initialGameData["gameData"]["players"],self.initialGameSettings)
 
 
                 
