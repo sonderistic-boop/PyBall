@@ -2,7 +2,7 @@ import pygame as pg
 import pygame.gfxdraw as gfxdraw
 
 #this is a dictionary of colours, the keys are the names of the colours, and the values are the hex codes of the colours
-import shared.themeColours as themeColours
+from shared.themeColours import themeColours
 #when assigning  team parameter, make  sure you do  so in all caps, also positon should be a tuple
 
 #typical haxball player has 30 diameter, 50 for the outer, 

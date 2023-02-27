@@ -48,7 +48,7 @@ def main():
             }
         # set the maximum FPS
         
-        
+                      
         # get all the events
         for event in info["events"]:
             # if the event is to quit the game, then set running as False
@@ -56,7 +56,7 @@ def main():
                 running = False
         
         output = current.main(info)
-        if output != None:
+        if output is not None:
             newFocus = output
 
 

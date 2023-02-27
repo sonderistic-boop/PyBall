@@ -3,7 +3,7 @@ from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 
-import pygame
+import pygame as pg
 import socket
 import pickle
 
@@ -31,7 +31,7 @@ sendingData = {
 class Client:
     def __init__(self,screen,userinfo,serverIp,port=5555):
         self.serverIp = serverIp
-        self.port = 5555
+        self.port = port
 
         self.transferMode = "lobby"
         self.focus = "GameLobby"
@@ -62,7 +62,7 @@ class Client:
                     self.focus = self.newFocus
                     self.transferMode = "game"
                     #FIX THIS LATER-------------------------------------------------------------------------------------------------------------------------------============
-                    self.current = Game(self.screen,self.initialGameData["gameSettings"][]
+                    self.current = Game(self.screen,self.initialGameData["gameData"]["players"],self.initialGameSettings)
 
 
                 
@@ -77,6 +77,7 @@ class Client:
                     if ReceivingDataLoad["transferMode"] == "game":
                         self.newFocus = "Game"
                         self.initialGameSettings = ReceivingDataLoad["gameSettings"].copy()
+                        self.initialGameData = ReceivingDataLoad.copy()
                         return
                 self.current.main(info,ReceivingDataLoad)
 
@@ -85,7 +86,10 @@ class Client:
 
             case "game":
                 #data transfer shenanigans
-                self.game()
+                self.sendingData = self.current.getData()
+                print("sending data: ",self.sendingData)
+                ReceivingDataLoad = self.networkInterface.sendData(self.sendingData)
+                self.current.main(info,ReceivingDataLoad)
 
             
             
