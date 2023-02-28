@@ -5,7 +5,7 @@ from gameClient.entities.stadium.goal.goal import collidingGoal
 from gameClient.entities.stadium.goal.goal import Goal
 
 tiles = {
-    "field" : pg.transform.scale((pg.image.load("./shared/assets/tiles/fieldtiles/fieldtile.png")),(300,300))
+    "field" : pg.transform.scale((pg.image.load("../shared/assets/tiles/fieldtiles/fieldtile.png")),(300,300))
     
 }
 class Stadium():

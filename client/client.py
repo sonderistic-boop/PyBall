@@ -62,7 +62,7 @@ class Client:
                     self.focus = self.newFocus
                     self.transferMode = "game"
                     #FIX THIS LATER-------------------------------------------------------------------------------------------------------------------------------============
-                    self.current = Game(self.screen,self.initialGameData["gameData"]["players"],self.initialGameSettings)
+                    self.current = Game(self.screen,self.initialGameData["gameData"]["players"],self.initialGameSettings,self.userinfo["name"])
 
 
                 
