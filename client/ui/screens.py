@@ -14,8 +14,8 @@ class Menu:
         
         
         self.surface = surface
-        self.background = pg.transform.scale((pg.image.load("../shared/assets/background/background.png")),(120,120))
-        self.logo = pg.image.load("../shared/assets/background/pyballlogo.png")
+        self.background = pg.transform.scale((pg.image.load("./shared/assets/background/background.png")),(120,120))
+        self.logo = pg.image.load("./shared/assets/background/pyballlogo.png")
         self.backgroundX = []
         
        
@@ -85,8 +85,8 @@ class Menu:
 
 class JoinGame(Menu):
     def __init__(self,surface):
+        super().__init__(surface)
         self.surface = surface
-        self.background = pg.transform.scale((pg.image.load("../shared/assets/background/background.png")),(120,120))
         self.backgroundX = []
         
         for i in range(-120,self.surface.get_width()+120,120):
@@ -204,8 +204,8 @@ class JoinGame(Menu):
 
 class GameLobby(Menu):
     def __init__(self,surface,clientSettings):
+        super().__init__(surface)
         self.surface = surface
-        self.background = pg.transform.scale((pg.image.load("../shared/assets/background/background.png")),(120,120))
         self.backgroundX = []
         self.clientSettings = clientSettings
 

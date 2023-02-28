@@ -60,5 +60,7 @@ class Ball(pg.sprite.Sprite):
         pg.draw.circle(self.image,(255,255,255),(self.h//2,self.h//2),(0.915*(self.w//2)))
 
   
-
+    def update(self,receivingBallData):
+        self.position = receivingBallData["position"]
+        
         

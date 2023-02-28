@@ -151,12 +151,11 @@ class pyBallServer:
                     #receivingData should include direction the player moved in, the game will then update the position of the player depending on the direction
                     #moved, wait for the game buffer to be true and then send the gameState, score, time remaining, and positions of ball and player
 
-                    if receivingData["direction"] != 0:
-                        self.game.players[player].move(receivingData["direction"])
+                    self.game.updatePlayer(str(player), receivingData)
                     
                     
 
-                    data = receivingDataLoad.copy()
+                    data = receivingData.copy()
 
                     sendingData = {"gameData" : self.game.getData(),
                                    "transferMode" : self.transferMode
@@ -169,17 +168,25 @@ class pyBallServer:
  
         print("Lost connection")
         print("deleting", player)
-        deletionSequence = [self.players[data["team"]][str(player)],
-                            #self.game.players[data["team"]][str(player)],
-                            getattr(self.game, data["team"])[str(player)],
-                            self.game.playerGroup[str(player)]
-                            ]
+
+        try:
+            del self.players[data["team"]][str(player)]
+        except:
+            pass
+        try:
+            del self.game.players[data["team"]][str(player)]
+        except:
+            pass
+        try:
+            del getattr(self.game, data["team"])[str(player)]
+        except:
+            pass
+        try:
+            del self.game.playerGroup[str(player)]
+        except:
+            pass
         
-        for command in deletionSequence:
-            try:
-                del command
-            except:
-                continue
+    
         
         
 
@@ -187,13 +194,13 @@ class pyBallServer:
 
 
     def connectionChecker(self):
-        
-        connection, address = self.serverSocket.accept()
-        print("connected to:", address)
-        
+        while True:
+            connection, address = self.serverSocket.accept()
+            print("connected to:", address)
+            
 
-
-        start_new_thread(self.newClient, (connection,address))
+            
+            start_new_thread(self.newClient, (connection,address))
 
 
         
@@ -204,15 +211,16 @@ class pyBallServer:
 #main    
  
 server = pyBallServer()
- 
+start_new_thread(server.connectionChecker, ())
 while True:
     server.gameBuffer = False
+    
     if server.transferMode == "lobby":
-        
-        server.connectionChecker()
+        server.gameBuffer = False
     
     if server.transferMode == "game":
-        server.game.run()
+        server.game.main()
+        print("yeahhhh")
         server.gameBuffer = True
                      
                                                  

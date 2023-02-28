@@ -98,13 +98,14 @@ class Game():
 
 
 
-    def run(self):
+    def main(self):
         #check for collisions, check for goals, check for time, check for score
         #update the ball, update the players
         #render the stadium, render the ball, render the players
+        print("maining")
         self.collisionChecker()
         self.updatePhysics()
-        
+        self.render()
            
 
 
@@ -209,6 +210,13 @@ class Game():
             data["players"]["team2"][i] = self.team2[i].getData()
 
         return data
+    
+    def updatePlayer(self,username,ReceivingClientData):
+        if username in self.team1:
+            self.team1[username].update(ReceivingClientData)
+        elif username in self.team2:
+            self.team2[username].update(ReceivingClientData)
+
     
 
     

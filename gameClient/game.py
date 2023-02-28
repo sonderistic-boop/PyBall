@@ -77,9 +77,12 @@ class Game():
 
     def render(self):
         #draw the stadium, draw the ball, draw the players
+        self.parentScreen.fill((136, 179, 120))
         self.stadium.render()
-        for i in self.playerGroup:
-            i.render()
+        for i in self.leftTeam:
+            self.leftTeam[i].render()
+        for i in self.rightTeam:
+            self.rightTeam[i].render()
         self.ball.render()
         
         
@@ -105,26 +108,30 @@ class Game():
         for player in self.rightTeam:
             if player.isPlayer is True:
                 position = player.position
-           """    
+           """
+        
+
+
         #create a dictionary, with keys position, and actions. actions will have keys "kicked" and "direction" with a normalised vector of the direction of movement
-        for event in info["events"]:
-            match event.type:
-                case pg.KEYDOWN:
-                    
-                    if event.key == pg.K_UP:
-                        data["actions"]["direction"][1] += 1
+        keys = pg.key.get_pressed()
+        if keys[pg.K_w] or keys[pg.K_UP]:
+            data["actions"]["direction"] = (data["actions"]["direction"][0], data["actions"]["direction"][1] + 1)
+        
+        if keys[pg.K_s] or keys[pg.K_DOWN]:
+            data["actions"]["direction"] = (data["actions"]["direction"][0], data["actions"]["direction"][1] - 1)
+
+        if keys[pg.K_a] or keys[pg.K_LEFT]:
+            data["actions"]["direction"] = (data["actions"]["direction"][0] - 1, data["actions"]["direction"][1])
+
+        if keys[pg.K_d] or keys[pg.K_RIGHT]:
+            data["actions"]["direction"] = (data["actions"]["direction"][0] + 1, data["actions"]["direction"][1])
+
+        if keys[pg.K_x] or keys[pg.K_SPACE]:
+            data["actions"]["kicked"] = True
                         
-                    if event.key == pg.K_DOWN:
-                        data["actions"]["direction"][1] -= 1
-                        
-                    if event.key == pg.K_LEFT:
-                        data["actions"]["direction"][1] -= 1
-                        
-                    if event.key == pg.K_RIGHT:
-                        data["actions"]["direction"][1] += 1
-                    
-                    if event.key == pg.K_x or event.key == pg.K_SPACE:
-                        data["actions"]["kicked"] == True
+      
+        
+        return data
                     
                     
                     
@@ -137,15 +144,30 @@ class Game():
          
         
     def update(self,receivingData):
+
         #update positions of every object
+        #update the ball
+
+        #update the players
+        for player in self.leftTeam:
+            self.leftTeam[player].update(receivingData["gameData"]["players"]["team1"][player])
+
+            
+        for player in self.rightTeam:
+            self.rightTeam[player].update(receivingData["gameData"]["players"]["team2"][player]) 
+        self.ball.update(receivingData["gameData"]["ball"])
+        self.time = receivingData["gameData"]["timeRemaining"]
+        self.leftTeamScore = receivingData["gameData"]["score"]["team1"]
+        self.rightTeamScore = receivingData["gameData"]["score"]["team2"]
+
         
     def main(self,info,receivingData):
         #check for collisions, check for goals, check for time, check for score
         #update the ball, update the players
         #render the stadium, render the ball, render the players
-        self.getData(info)
+        self.update(receivingData)
 
-        self.render(info)
+        self.render()
            
         
         

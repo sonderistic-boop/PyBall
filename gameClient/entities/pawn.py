@@ -19,6 +19,7 @@ class Pawn(pg.sprite.Sprite):
         self.surface = surface
         self.position =  pg.math.Vector2(position)
         self.initialPosition = pg.math.Vector2(position).copy()
+        self.kicking = False
 
         #diameter of the pawn
         self.size = size
@@ -58,8 +59,13 @@ class Pawn(pg.sprite.Sprite):
     #renders the graphics of the pawn, the outer circle and the inner circle
     def renderGraphics(self):
         
-        pg.draw.circle(self.image,(0,0,0),(self.w//2,self.h//2),(0.64*(self.w//2)))
+        pg.draw.circle(self.image,(255&self.kicking,255&self.kicking,255&self.kicking),(self.w//2,self.h//2),(0.64*(self.w//2)))
         pg.draw.circle(self.image,self.colour,(self.h//2,self.h//2),(0.55*(self.w//2)))
+    
+    def update(self,receivingData):
+        if not self.isPlayer:
+            self.kicking = receivingData["kicking"]
+        self.position = pg.math.Vector2(receivingData["position"])
 
 
   

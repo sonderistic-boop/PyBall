@@ -86,7 +86,7 @@ class Client:
 
             case "game":
                 #data transfer shenanigans
-                self.sendingData = self.current.getData()
+                self.sendingData = self.current.getData(info)
                 print("sending data: ",self.sendingData)
                 ReceivingDataLoad = self.networkInterface.sendData(self.sendingData)
                 self.current.main(info,ReceivingDataLoad)
