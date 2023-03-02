@@ -46,6 +46,7 @@ class Pawn(pg.sprite.Sprite):
         self.inverseMass = 1/self.mass
         self.restitution = 0.5
         self.acceleration = 0.1
+        self.deltav = pg.math.Vector2(0,0)
         self.damping = 0.96
         
 
@@ -79,6 +80,7 @@ class Pawn(pg.sprite.Sprite):
 
     def updatePhysics(self):
         if self.staticValue:
+            self.velocity += self.deltav
             self.constrainvelocity()
             #self.wallcollide()
             self.position  +=  self.velocity
@@ -123,8 +125,8 @@ class Pawn(pg.sprite.Sprite):
         
         if deltav.length() != 0:
             deltav = deltav.normalize() * self.acceleration
-        self.velocity += deltav
-        print(self.position)
+            self.deltav = deltav
+        print(self.velocity)
 
 
 

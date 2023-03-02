@@ -66,6 +66,7 @@ class Ball(pg.sprite.Sprite):
         pg.draw.circle(self.image,(255,255,255),(self.h//2,self.h//2),(0.915*(self.w//2)))
 
     def updatePhysics(self):
+        
         if self.staticValue:
             self.position  +=  self.velocity
             self.velocity *= self.damping

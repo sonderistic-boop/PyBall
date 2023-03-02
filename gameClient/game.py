@@ -115,10 +115,10 @@ class Game():
         #create a dictionary, with keys position, and actions. actions will have keys "kicked" and "direction" with a normalised vector of the direction of movement
         keys = pg.key.get_pressed()
         if keys[pg.K_w] or keys[pg.K_UP]:
-            data["actions"]["direction"] = (data["actions"]["direction"][0], data["actions"]["direction"][1] + 1)
+            data["actions"]["direction"] = (data["actions"]["direction"][0], data["actions"]["direction"][1] - 1)
         
         if keys[pg.K_s] or keys[pg.K_DOWN]:
-            data["actions"]["direction"] = (data["actions"]["direction"][0], data["actions"]["direction"][1] - 1)
+            data["actions"]["direction"] = (data["actions"]["direction"][0], data["actions"]["direction"][1] + 1)
 
         if keys[pg.K_a] or keys[pg.K_LEFT]:
             data["actions"]["direction"] = (data["actions"]["direction"][0] - 1, data["actions"]["direction"][1])

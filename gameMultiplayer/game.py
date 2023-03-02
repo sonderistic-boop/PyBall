@@ -102,7 +102,7 @@ class Game():
         #check for collisions, check for goals, check for time, check for score
         #update the ball, update the players
         #render the stadium, render the ball, render the players
-        print("maining")
+       
         self.collisionChecker()
         self.updatePhysics()
         self.render()

@@ -7,6 +7,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 
 import socket
+import pygame as pg
 import pickle
 from _thread import *
 from network import get_ip
@@ -63,6 +64,7 @@ class pyBallServer:
 
 
     def newClient(self,connection, address):
+        clientClock = pg.time.Clock()
         
         player = connection.recv(4096)
         player = pickle.loads(player)
@@ -120,9 +122,9 @@ class pyBallServer:
                         
                         if "transferMode" in receivingData:
                             if receivingData["transferMode"] == "game":
+                                self.game = gameMultiplayer.Game(self.players,self.gameSettings["time"],self.gameSettings["maxScore"],self.gameSettings["stadium"])
                                 self.transferMode = receivingData["transferMode"]
                                 sendingData["transferMode"] = self.transferMode
-                                self.game = gameMultiplayer.Game(self.players,self.gameSettings["time"],self.gameSettings["maxScore"],self.gameSettings["stadium"])
                                 sendingData["gameData"] = self.game.getData()
 
 
@@ -164,6 +166,8 @@ class pyBallServer:
 
 
                     connection.send(sendingDataLoad)
+                
+            clientClock.tick(60)
                         
  
         print("Lost connection")
@@ -194,6 +198,7 @@ class pyBallServer:
 
 
     def connectionChecker(self):
+        
         while True:
             connection, address = self.serverSocket.accept()
             print("connected to:", address)
@@ -211,6 +216,7 @@ class pyBallServer:
 #main    
  
 server = pyBallServer()
+serverclock = pg.time.Clock()
 start_new_thread(server.connectionChecker, ())
 while True:
     server.gameBuffer = False
@@ -220,7 +226,7 @@ while True:
     
     if server.transferMode == "game":
         server.game.main()
-        print("yeahhhh")
+        serverclock.tick(60)
         server.gameBuffer = True
                      
                                                  
