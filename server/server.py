@@ -137,6 +137,9 @@ class pyBallServer:
                     if self.transferMode != None:
                         sendingData["gameSettings"] = self.gameSettings
                         sendingData["players"] = self.players
+                    if self.transferMode == "game":
+                        sendingData["gameData"] = self.game.getData()
+                        sendingData["transferMode"] = self.transferMode
                     sendingDataLoad = pickle.dumps(sendingData)
                     connection.send(sendingDataLoad)
                     #send data
@@ -154,16 +157,11 @@ class pyBallServer:
                     #moved, wait for the game buffer to be true and then send the gameState, score, time remaining, and positions of ball and player
 
                     self.game.updatePlayer(str(player), receivingData)
-                    
-                    
-
                     data = receivingData.copy()
-
                     sendingData = {"gameData" : self.game.getData(),
                                    "transferMode" : self.transferMode
                                      }
                     sendingDataLoad = pickle.dumps(sendingData)
-
 
                     connection.send(sendingDataLoad)
                 
@@ -227,6 +225,7 @@ while True:
     if server.transferMode == "game":
         server.game.main()
         serverclock.tick(60)
+        print(serverclock.get_time())
         server.gameBuffer = True
                      
                                                  

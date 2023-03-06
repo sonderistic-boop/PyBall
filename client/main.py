@@ -4,8 +4,10 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 
 import pygame as pg
+import subprocess
 import client.ui.screens as screens
 from client.client import Client
+from server.network import get_ip
 
 # design a pygame window, and set the window title as pyBall
 pg.init()
@@ -31,7 +33,21 @@ def main():
                     
                     current = Client(screen,{"name" : newFocus[0]["username"],"team" : "neutral"},newFocus[0]["ip"],newFocus[0]["port"])
                     newFocus = newFocus[1]
+                
+                case newFocus if newFocus[1] == "Host":
+                    focus = newFocus[1]
+                    server = subprocess.Popen([sys.executable, './server/server.py', '--username', 'root'])
+
+                    current = Client(screen,{"name" : newFocus[0]["username"],"team" : "neutral"},get_ip())
+                    newFocus = newFocus[1]
+
                 case newFocus if newFocus != "Exit" and isinstance(newFocus,str):
+                    if focus == "Host":
+                        try:
+                            server.kill()
+                        except:
+                            pass
+                    
                     focus = newFocus
                     current = getattr(screens,newFocus)(screen)
                 case "Exit":
@@ -54,6 +70,13 @@ def main():
             # if the event is to quit the game, then set running as False
             if event.type == pg.QUIT:
                 running = False
+                try:
+                    server.kill()
+                except:
+                    pass
+
+                pg.quit()
+                sys.exit()
         
         output = current.main(info)
         if output is not None:
@@ -62,6 +85,7 @@ def main():
 
 
         pg.display.flip()
+        
             
         
         

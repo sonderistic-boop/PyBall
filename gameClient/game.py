@@ -45,8 +45,9 @@ class Game():
 
         self.screen = pg.Surface((self.size),pg.SRCALPHA)
         
-        self.stadium = getattr(stadiums,gameSettings["stadium"])
-        self.stadium = self.stadium(self.screen,(100,100),[self.colours["team1"],self.colours["team2"]])
+        self.stadiumType = getattr(stadiums,gameSettings["stadium"])
+        self.stadium = self.stadiumType(self.screen,(100,100),[self.colours["team1"],self.colours["team2"]])
+        self.stadium = self.stadiumType(self.screen,(self.screen.get_width()//2-((self.stadium.bounds["x2"]-self.stadium.bounds["x1"])//2),self.screen.get_height()//2-((self.stadium.bounds["y2"]-self.stadium.bounds["y1"])//2)),[self.colours["team1"],self.colours["team2"]])
         
         
         self.ball = Ball(self.screen,(self.stadium.bounds["middle"][0],self.stadium.bounds["middle"][1]),(30,30))
@@ -77,7 +78,8 @@ class Game():
 
     def render(self):
         #draw the stadium, draw the ball, draw the players
-        self.parentScreen.fill((136, 179, 120))
+
+        self.screen.fill((136, 179, 255))
         self.stadium.render()
         for i in self.leftTeam:
             self.leftTeam[i].render()

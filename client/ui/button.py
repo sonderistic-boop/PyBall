@@ -244,10 +244,9 @@ class ListButton(Button):
         
 
     def updateItems(self,newList):
-        print("oldlist ", list(self.list.keys()))
-        print("newlist ", list(newList.keys()))
+        
         if list(newList.keys()) != list(self.list.keys()):
-            print("updating")
+            
             self.list = {}
             
             
@@ -372,15 +371,17 @@ class InfoButton(Button):
         super().__init__(surface,pos,size,(0,0,0,255))
         self.info = info
         self.textColour = (255,255,255,255)
-        self.textSize = 9
-
+        self.textSize = int(size[1])
+        self.size = size
     def render(self):
-        self.image.fill(self.colour)
+        self.image.fill((100,100,100,255))
         #draw the info text
         if self.info != "":
             font = pg.font.SysFont("Arial",self.textSize)
             text = font.render(self.info,1,self.textColour)
+            pg.transform.scale(self.image,(int(text.get_width())+5,int(text.get_height())+5))
             self.image.blit(text,(0,0))
+            
     
         self.surface.blit(self.image,(self.position[0],self.position[1]))
 

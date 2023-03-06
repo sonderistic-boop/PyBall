@@ -16,7 +16,7 @@ def quadManifold(obj1,obj2):
         if distanceVector[0]  < 0:
             return pg.Vector2(-1,0)
         else:
-            return pg.Vector2(0,0)
+            return pg.Vector2(1,0)
 
     else:
         if distanceVector[1] < 0:

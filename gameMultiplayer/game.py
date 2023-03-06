@@ -49,8 +49,9 @@ class Game():
 
         self.screen = pg.Surface((1600,950),pg.SRCALPHA)
         
-        self.stadium = getattr(stadiums,stadium)
-        self.stadium = self.stadium(self.screen,(100,100),[self.colours["team1"],self.colours["team2"]])
+        self.stadiumType = getattr(stadiums,stadium)
+        self.stadium = self.stadiumType(self.screen,(100,100),[self.colours["team1"],self.colours["team2"]])
+        self.stadium = self.stadiumType(self.screen,(self.screen.get_width()//2-((self.stadium.bounds["x2"]-self.stadium.bounds["x1"])//2),self.screen.get_height()//2-((self.stadium.bounds["y2"]-self.stadium.bounds["y1"])//2)),[self.colours["team1"],self.colours["team2"]])
         
         
         self.ball = Ball(self.screen,(self.stadium.bounds["middle"][0],self.stadium.bounds["middle"][1]),(30,30))
@@ -156,7 +157,20 @@ class Game():
                 physics.objectCollision(i,self.ball,col.circleQuadManifold(i,self.ball))
 
         for i in ballPlayerCollisions:
-            physics.objectCollision(self.ball,i)
+
+            
+            if i.kicking:
+                i.kicking = False
+                physics.thrust(self.ball,i)
+            else:
+                physics.objectCollision(self.ball,i)
+            
+        
+        for i in playerPlayerCollisions:
+            for j in playerPlayerCollisions[i]:
+                if i != j:
+                    physics.objectCollision(i,j)
+                
 
         
     """  
@@ -164,9 +178,7 @@ class Game():
             for j in playerStadiumCollisions[i]:
                 physics.objectCollision(i,j)
         
-        for i in playerPlayerCollisions:
-            for j in playerPlayerCollisions[i]:
-                physics.objectCollision(i,j)
+        
         """
         
         
@@ -174,9 +186,9 @@ class Game():
         
     def goalScored(self,goal):
         
-        if goal.team == self.teamColours["team1"]:
+        if goal.team == self.colours["team1"]:
             self.team2Score += 1
-        elif goal.team == self.teamColours["team2"]:
+        elif goal.team == self.colours["team2"]:
             self.team1Score += 1
 
         
