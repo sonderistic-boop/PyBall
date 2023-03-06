@@ -24,6 +24,7 @@ class pyBallServer:
         self.serverIP = get_ip()
         self.transferMode = "lobby"
         self.gameBuffer = False
+        
         #two transferModes, "lobby" and "game". While lobby is active, client will send team to server, and server will send back-
         #teams of all players, and gamesettings in a pickle dump object with two dictionaries
         #admin can change any clients team, this request will take precedent over any other.
@@ -75,6 +76,7 @@ class pyBallServer:
         data = {"team" : "neutral"}
         
         
+        
         sendingData = {"gameSettings" : self.gameSettings,
                        "players" : self.players
                       }
@@ -106,7 +108,8 @@ class pyBallServer:
                     except Exception as e:
                         print(e)
                         break
-
+                    print(receivingData)
+                    print(data)
                     if receivingData["team"] != data["team"]:
                         #change has occured in players selected team, rectify by deleting record of player in previous team and adding to new team
                         N = (self.players[(data["team"])][str(player)]).copy()
@@ -157,14 +160,15 @@ class pyBallServer:
                     #moved, wait for the game buffer to be true and then send the gameState, score, time remaining, and positions of ball and player
 
                     self.game.updatePlayer(str(player), receivingData)
-                    data = receivingData.copy()
+                    
                     sendingData = {"gameData" : self.game.getData(),
                                    "transferMode" : self.transferMode
                                      }
                     sendingDataLoad = pickle.dumps(sendingData)
 
                     connection.send(sendingDataLoad)
-                
+                    if self.transferMode == "lobby":
+                        self.data = {"team" : "neutral"} 
             clientClock.tick(60)
                         
  
@@ -223,9 +227,14 @@ while True:
         server.gameBuffer = False
     
     if server.transferMode == "game":
-        server.game.main()
+        checker = server.game.main()
+        if checker != None:
+            match checker:
+                case "gameOver":
+                    server.transferMode = "lobby"
         serverclock.tick(60)
-        print(serverclock.get_time())
+        
+        
         server.gameBuffer = True
                      
                                                  

@@ -511,46 +511,72 @@ class Disconnect(Menu):
             return checker
         self.render()
     
-    class GameUi:
-        def __init__(self,surface,gameInfo):
-            self.surface = surface
-            self.screen = pg.surface.Surface((self.surface.get_width(),50))
+
+class ScoreBoard:
+    def __init__(self,surface,position,gameSettings):
+        self.surface = surface
+        self.screen = pg.surface.Surface((self.surface.get_width(),50))
+        
+        self.infoButtons = {}
+        self.infoButtons["Time"] = InfoButton(self.screen,((self.screen.get_width()-120),10),(80,30),gameSettings["time"])
+        self.infoButtons["leftTeamScore"] = InfoButton(self.screen,(85,10),(30,30),"0")
+        self.infoButtons["rightTeamScore"] = InfoButton(self.screen,(115,10),(30,30),"0")
+
+        for i in self.infoButtons:
+            self.infoButtons[i].colour = (0,0,0)
+
+
+        self.texts = {
             
-            self.infoButtons = {}
-            self.infoButtons["Time"] = InfoButton(self.surface,((self.surface.get_width()-200),10),(200,50))
-            self.infoButtons["Score1"] = InfoButton(self.surface,((self.surface.get_width()-200),70),(200,50))
-            self.infoButtons["Score2"] = InfoButton(self.surface,((self.surface.get_width()-200),130),(200,50))
-            self.infoButtons["Score1Colour"] = InfoButton(self.surface,((self.surface.get_width()-200),190),(200,50))
-            self.infoButtons["Score2Colour"] = InfoButton(self.surface,((self.surface.get_width()-200),250),(200,50))
-
-
-            self.texts = {
-                
-                "Time" : {
-                        "text":"Time:",
-                        "textColour":(255,255,255),
-                        "font" : "Arial",
-                        "position" : (self.surface.get_width()-200,10),
-                        "textSize" : 30
-                        }
+            "Time" : {
+                    "text":"Time:",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()-200,10),
+                    "textSize" : 30
+                    },
+            "Dash1" : {
+                    "text":"-",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (55,10),
+                    "textSize" : 30
+                },
+            "Dash2" : {
+                    "text":"-",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (150,10),
+                    "textSize" : 30
                 }
-        def renderTexts(self):
-            self.screen.fill((0,0,0))
+            }
 
-            for text in self.texts:
-                font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
-                rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
-                self.surface.blit(rendertext,(self.texts[text]["position"]))
-        
-        def render(self,gameInfo):
-            self.renderTexts()
-            self.renderButtons()
-        
-        def renderButtons(self):
-            for button in self.infoButtons:
-                self.infoButtons[button].render()
+        self.position = position
 
-        def updateButtons(self,gameInfo):
-            for button in self.infoButtons:
-                self.infoButtons[button].update(gameInfo)
-        
+    def renderTexts(self):
+
+        for text in self.texts:
+            font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
+            rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
+            self.screen.blit(rendertext,(self.texts[text]["position"]))
+    
+    def render(self):
+        self.screen.fill((0,0,0))
+        self.renderGraphics()
+        self.renderTexts()
+        self.renderButtons()
+        self.surface.blit(self.screen,self.position)
+    
+    def renderButtons(self):
+        for button in self.infoButtons:
+            self.infoButtons[button].render()
+
+    def updateButtons(self,gameInfo):
+        self.infoButtons["Time"].info = gameInfo["time"]
+        self.infoButtons["leftTeamScore"].info = gameInfo["leftTeamScore"]
+        self.infoButtons["rightTeamScore"].info = gameInfo["rightTeamScore"]
+
+    def renderGraphics(self):
+        pg.draw.rect(self.screen,themeColours["red"],(10,10,30,30))
+        pg.draw.rect(self.screen,themeColours["blue"],(180,10,30,30))
+    

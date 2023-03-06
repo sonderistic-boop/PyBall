@@ -368,21 +368,25 @@ class ListItemButton(Button):
 
 class InfoButton(Button):
     def __init__(self,surface,pos,size,info):
-        super().__init__(surface,pos,size,(0,0,0,255))
+        super().__init__(surface,pos,size,(100,100,100,255))
         self.info = info
         self.textColour = (255,255,255,255)
         self.textSize = int(size[1])
         self.size = size
+        self.position = pos
+
     def render(self):
-        self.image.fill((100,100,100,255))
+        self.image.fill(self.colour)
         #draw the info text
         if self.info != "":
             font = pg.font.SysFont("Arial",self.textSize)
-            text = font.render(self.info,1,self.textColour)
+            text = font.render(str(self.info),1,self.textColour)
             pg.transform.scale(self.image,(int(text.get_width())+5,int(text.get_height())+5))
             self.image.blit(text,(0,0))
             
     
         self.surface.blit(self.image,(self.position[0],self.position[1]))
+
+
 
 

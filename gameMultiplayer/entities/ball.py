@@ -76,6 +76,7 @@ class Ball(pg.sprite.Sprite):
 
     def reset(self):
         self.position = self.initialPosition.copy()
+        self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
         self.velocity = pg.math.Vector2(0,0)
     
     def getData(self):

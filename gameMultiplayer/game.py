@@ -17,13 +17,20 @@ import gameMultiplayer.entities.stadium.stadiums as stadiums
 
 class Game():
     def __init__(self,players,time,maxScore,stadium):
+
+        pg.init()
         
         #declares the parent screen, which is the screen that the game surface will be drawn on
         #declares which stadium the game will be played on
         self.stadium = stadium
         self.gameState = "gameStart"
+        self.gameState = "game"
 
         #numerous game states, "gameStart","game","goalScored","gameEnd"
+        self.gameTimerEvent = pg.USEREVENT+1
+        self.goalTimerEvent = pg.USEREVENT+2
+        self.gameEndTimerEvent = pg.USEREVENT+3
+        self.gameTimer = pg.time.set_timer(self.gameTimerEvent,1000)
 
         #declares how long the game will last
         self.time = time
@@ -48,10 +55,16 @@ class Game():
         
 
         self.screen = pg.Surface((1600,950),pg.SRCALPHA)
+
+        
         
         self.stadiumType = getattr(stadiums,stadium)
+        #put stadium in the middle of the screen
         self.stadium = self.stadiumType(self.screen,(100,100),[self.colours["team1"],self.colours["team2"]])
-        self.stadium = self.stadiumType(self.screen,(self.screen.get_width()//2-((self.stadium.bounds["x2"]-self.stadium.bounds["x1"])//2),self.screen.get_height()//2-((self.stadium.bounds["y2"]-self.stadium.bounds["y1"])//2)),[self.colours["team1"],self.colours["team2"]])
+        self.stadiumSize = (self.screen.get_width()//2-((self.stadium.bounds["x2"]-self.stadium.bounds["x1"])//2),self.screen.get_height()//2-((self.stadium.bounds["y2"]-self.stadium.bounds["y1"])//2))
+        self.stadium = None
+        self.stadium = self.stadiumType(self.screen,self.stadiumSize,[self.colours["team1"],self.colours["team2"]])
+    
         
         
         self.ball = Ball(self.screen,(self.stadium.bounds["middle"][0],self.stadium.bounds["middle"][1]),(30,30))
@@ -103,7 +116,23 @@ class Game():
         #check for collisions, check for goals, check for time, check for score
         #update the ball, update the players
         #render the stadium, render the ball, render the players
-       
+        
+        for event in pg.event.get():
+            if event.type == self.gameTimerEvent:
+                if self.gameState == "game":
+                    self.time -= 1
+                if self.time == 0:
+                    self.gameEnd()
+                    pg.time.set_timer(self.gameTimerEvent,0)
+            if event.type == self.goalTimerEvent:
+                pg.time.set_timer(self.goalTimerEvent,0)
+                self.reset()
+                self.gameState = "game"
+                
+                
+            if event.type == self.gameEndTimerEvent:
+                pg.time.set_timer(self.gameEndTimerEvent,0)
+                return "gameOver"
         self.collisionChecker()
         self.updatePhysics()
         self.render()
@@ -148,7 +177,8 @@ class Game():
 
 
         for i in ballGoalCollisions:
-            self.goalScored(i)
+            if self.gameState == "game":
+                self.goalScored(i)
 
 
         for i in ballStadiumCollisions:
@@ -188,13 +218,29 @@ class Game():
         
         if goal.team == self.colours["team1"]:
             self.team2Score += 1
+            if self.team2Score == self.maxScore:
+                self.gameEnd()
+            else:
+                self.gameState = "goalScoredTeam2"
         elif goal.team == self.colours["team2"]:
             self.team1Score += 1
+            if self.team1Score == self.maxScore:
+                self.gameEnd()
+            else:
+                self.gameState = "goalScoredTeam1"
 
+        print("goal scored")
         
-        self.reset()
+        pg.time.set_timer(self.goalTimerEvent,5000)
 
-
+    def gameEnd(self):
+        if self.team1Score > self.team2Score:
+            self.gameState = "gameEndTeam1"
+        elif self.team1Score < self.team2Score:
+            self.gameState = "gameEndTeam2"
+        else:
+            self.gameState = "gameEndDraw"
+        pg.time.set_timer(self.gameEndTimerEvent,5000)
 
     def reset(self):
         self.ball.reset()

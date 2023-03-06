@@ -23,6 +23,7 @@ def main():
     focus = "Menu"
     newFocus= "Menu"
     current = screens.Menu(screen)
+    
     while running:
         clock.tick(60)
         if focus != newFocus:
