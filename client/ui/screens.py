@@ -157,8 +157,7 @@ class JoinGame(Menu):
 
 
       
-    def renderLogo(self):
-        self.surface.blit(self.logo,(((self.surface.get_width()/2)-(self.logo.get_width()/2)),100))
+
 
     def renderButtons(self):
         for button in self.buttons:
@@ -203,11 +202,12 @@ class JoinGame(Menu):
 
 
 class GameLobby(Menu):
-    def __init__(self,surface,clientSettings):
+    def __init__(self,surface,clientSettings,ip):
         super().__init__(surface)
         self.surface = surface
         self.backgroundX = []
         self.clientSettings = clientSettings
+        self.ip = ip
 
         
         for i in range(-120,self.surface.get_width()+120,120):
@@ -215,10 +215,14 @@ class GameLobby(Menu):
         
         self.buttons = {}
         self.buttons["Start"] = MenuButton(self.surface,((self.surface.get_width()-350),800),(200,50),"Start","startGame")
+        self.buttons["Leave"] = MenuButton(self.surface,((150,150)),(200,50),"Leave","Exit")
         self.lists = {}
         self.lists["team1"] = ListButton(self.surface,((400,175)),(200,500),[])
         self.lists["team2"] = ListButton(self.surface,(((self.surface.get_width()-600),175)),(200,500),[])
         self.lists["neutral"] = ListButton(self.surface,(((self.surface.get_width()/2)-100),175),(200,500),[self.clientSettings["name"]])
+
+        self.infoButtons = {}
+        self.infoButtons["ip"] = InfoButton(self.surface,(400,800),(150,25),str(self.ip))
         self.datatoSend = {}
 
 
@@ -243,6 +247,14 @@ class GameLobby(Menu):
                     "font" : "Arial",
                     "position" : ((self.surface.get_width()/2)-100,125),
                     "textSize" : 30
+            },
+            "ip" : {
+                    "text":"IP:",
+                    "textColour": (255,255,255),
+                    "font" : "Arial",
+                    "position" : (375,800),
+                    "textSize" : 20
+            
             }
         }   
 
@@ -262,10 +274,12 @@ class GameLobby(Menu):
             checker = self.buttons[button].eventHandler(info)
             if checker == "startGame":
                 self.datatoSend["transferMode"] = "game"
+            elif checker == "Exit":
+                return checker
         for listButton in self.lists:
             checker = self.lists[listButton].eventHandler(info,self.lists)
             if checker != None:
-                print(checker)
+                
                 return checker
         
             
@@ -283,6 +297,8 @@ class GameLobby(Menu):
             self.buttons[button].render()
         for listButton in self.lists:
             self.lists[listButton].render()
+        for infoButton in self.infoButtons:
+            self.infoButtons[infoButton].render()
 
 
     def render(self):
@@ -320,6 +336,221 @@ class GameLobby(Menu):
         #receivingData will contain a "players" key which contains a "team1", "team2" and "neutral" key
         
         self.updateLists(receivingData["players"])
-        self.eventHandler(info)
+        checker = self.eventHandler(info)
+        if checker == "Exit":
+            return "Exit"
         self.render()
+        
+
+
+
+
+class HostGame(Menu):
+    def __init__(self,surface):
+        super().__init__(surface)
+        self.surface = surface
+        self.backgroundX = []
+        
+        for i in range(-120,self.surface.get_width()+120,120):
+            self.backgroundX.append(i)
+        
+        self.buttons = {}
+        self.buttons["Back"] = MenuButton(self.surface,(((150),150)),(200,50),"Back","Menu")
+        self.buttons["Host"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),700),(200,50),"Host","Host")
+        self.buttons["Username"] = InputButton(self.surface,(((self.surface.get_width()/2)-100),300),(200,50))
+        
+
+
+        self.texts = {
+            
+            "Username" : {
+                    "text":"Username:",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.buttons["Username"].position[0]-200,300),
+                    "textSize" : 30
+                    }
+
+            }
+        
+
+    def renderTexts(self):
+        for text in self.texts:
+            font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
+            rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
+            self.surface.blit(rendertext,(self.texts[text]["position"]))
+
+    
+    
+        
+    def eventHandler(self,info):
+        for button in self.buttons:
+            checker = self.buttons[button].eventHandler(info)
+            if checker != None:
+                return checker
+            
+
+
+    def renderSlidingBackground(self):
+        for i in range(0,len(self.backgroundX)):
+            if self.backgroundX[i] <= -120:
+                self.backgroundX[i] = self.surface.get_width() + 120
+            for j in range(0,(self.surface.get_height()+120),120):
+                
+                self.surface.blit(self.background,(self.backgroundX[i],j))
+                
+            self.backgroundX[i] -= 1
+
+
+
+    def renderButtons(self):
+        for button in self.buttons:
+            self.buttons[button].render()
+    
+    def render(self):
+        self.renderSlidingBackground()
+        s = pg.Surface((self.surface.get_width()-200,self.surface.get_height()-200))
+        s.set_alpha(220)                
+        s.fill((0,0,0))
+        self.surface.blit(s,(100,100))
+        self.renderTexts()
+
+        self.renderButtons()
+
+    def main(self,events):
+        checker = self.eventHandler(events)
+        if checker == "Host":
+            clientSettings = {
+                "username" : self.buttons["Username"].text,
+            }
+            return clientSettings, checker
+        elif checker != None:
+            return checker
+        self.render()
+
+
+
+
+
+
+
+class Disconnect(Menu):
+    def __init__(self,surface):
+        super().__init__(surface)
+        self.surface = surface
+        self.backgroundX = []
+        
+        for i in range(-120,self.surface.get_width()+120,120):
+            self.backgroundX.append(i)
+        
+        self.buttons = {}
+        
+        self.buttons["Menu"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),700),(200,50),"Menu","Menu")
+        
+
+
+        self.texts = {
+            
+            "Disconnect" : {
+                    "text":"You were disconnected, please try again later",
+                    "textColour":(255,20,20),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-200,self.surface.get_height()/2),
+                    "textSize" : 20
+                    }
+
+            }
+        
+
+    def renderTexts(self):
+        for text in self.texts:
+            font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
+            rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
+            self.surface.blit(rendertext,(self.texts[text]["position"]))
+
+    
+    
+        
+    def eventHandler(self,info):
+        for button in self.buttons:
+            checker = self.buttons[button].eventHandler(info)
+            if checker != None:
+                return checker
+            
+
+
+    def renderSlidingBackground(self):
+        for i in range(0,len(self.backgroundX)):
+            if self.backgroundX[i] <= -120:
+                self.backgroundX[i] = self.surface.get_width() + 120
+            for j in range(0,(self.surface.get_height()+120),120):
+                
+                self.surface.blit(self.background,(self.backgroundX[i],j))
+                
+            self.backgroundX[i] -= 1
+
+
+
+    def renderButtons(self):
+        for button in self.buttons:
+            self.buttons[button].render()
+    
+    def render(self):
+        self.renderSlidingBackground()
+        s = pg.Surface((self.surface.get_width()-900,self.surface.get_height()-900))
+        s.set_alpha(220)                
+        s.fill((150,150,150))
+        self.surface.blit(s,(self.surface.get_width()/2-s.get_width()/2,self.surface.get_height()/2-s.get_height()/2))
+        self.renderTexts()
+
+        self.renderButtons()
+
+    def main(self,events):
+        checker = self.eventHandler(events)
+        if checker != None:
+            return checker
+        self.render()
+    
+    class GameUi:
+        def __init__(self,surface,gameInfo):
+            self.surface = surface
+            self.screen = pg.surface.Surface((self.surface.get_width(),50))
+            
+            self.infoButtons = {}
+            self.infoButtons["Time"] = InfoButton(self.surface,((self.surface.get_width()-200),10),(200,50))
+            self.infoButtons["Score1"] = InfoButton(self.surface,((self.surface.get_width()-200),70),(200,50))
+            self.infoButtons["Score2"] = InfoButton(self.surface,((self.surface.get_width()-200),130),(200,50))
+            self.infoButtons["Score1Colour"] = InfoButton(self.surface,((self.surface.get_width()-200),190),(200,50))
+            self.infoButtons["Score2Colour"] = InfoButton(self.surface,((self.surface.get_width()-200),250),(200,50))
+
+
+            self.texts = {
+                
+                "Time" : {
+                        "text":"Time:",
+                        "textColour":(255,255,255),
+                        "font" : "Arial",
+                        "position" : (self.surface.get_width()-200,10),
+                        "textSize" : 30
+                        }
+                }
+        def renderTexts(self):
+            self.screen.fill((0,0,0))
+
+            for text in self.texts:
+                font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
+                rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
+                self.surface.blit(rendertext,(self.texts[text]["position"]))
+        
+        def render(self,gameInfo):
+            self.renderTexts()
+            self.renderButtons()
+        
+        def renderButtons(self):
+            for button in self.infoButtons:
+                self.infoButtons[button].render()
+
+        def updateButtons(self,gameInfo):
+            for button in self.infoButtons:
+                self.infoButtons[button].update(gameInfo)
         
