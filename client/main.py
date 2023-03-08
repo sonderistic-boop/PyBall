@@ -92,6 +92,6 @@ def main():
         
         
         # if the focus is on the menu, then run the menu
-
-main()
+if __name__ == "__main__":
+    main()
 
