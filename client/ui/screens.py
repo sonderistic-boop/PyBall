@@ -2,7 +2,7 @@ import os, sys
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
-
+import configparser
 import pygame as pg
 from client.ui.button import *
 from shared.themeColours import *
@@ -30,8 +30,9 @@ class Menu:
         self.buttons = {}
         self.buttons["Join Game"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),300),(200,50),"Join Game","JoinGame")
         self.buttons["Host Game"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),400),(200,50),"Host Game","HostGame")
-        self.buttons["Settings"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),500),(200,50),"Settings","Settings")             
-        self.buttons["Exit"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),600),(200,50),"Exit","Exit")
+        self.buttons["Settings"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),500),(200,50),"Settings","Settings")
+        self.buttons["Credits"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),600),(200,50),"Credits","Credits")             
+        self.buttons["Exit"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),700),(200,50),"Exit","Exit")
     
     
     
@@ -420,6 +421,8 @@ class HostGame(Menu):
     def main(self,events):
         checker = self.eventHandler(events)
         if checker == "Host":
+            if self.buttons["Username"].text == "":
+                self.buttons["Username"].text = "Player"
             clientSettings = {
                 "username" : self.buttons["Username"].text,
             }
@@ -579,4 +582,188 @@ class ScoreBoard:
     def renderGraphics(self):
         pg.draw.rect(self.screen,themeColours["red"],(10,10,30,30))
         pg.draw.rect(self.screen,themeColours["blue"],(180,10,30,30))
+
+
+class Settings(Menu):
+    def __init__(self,surface):
+        super().__init__(surface)
+        self.surface = surface
+        self.backgroundX = []
+        self.config = configparser.ConfigParser()
     
+        self.config.read("./settings.ini")
+        self.error = False
+        
+        for i in range(-120,self.surface.get_width()+120,120):
+            self.backgroundX.append(i)
+        
+        self.buttons = {}
+        
+        self.buttons["Back"] = MenuButton(self.surface,((150,150)),(200,50),"Back","Menu")
+        self.buttons["Apply"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),700),(200,50),"Apply","Apply")
+        self.buttons["Volume"] = InputButton(self.surface,(((self.surface.get_width()/2)-50),((self.surface.get_height()/2)-100)),(100,50))
+        self.buttons["Volume"].text = self.config["Settings"]["Volume"]
+        
+
+
+        self.texts = {
+            
+
+            "Volume" : {
+                    "text":"Volume: ",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-150,self.surface.get_height()/2-100),
+                    "textSize" : 30
+                },
+            "Error" : {
+                    "text":"Invalid Input, please try again",
+                    "textColour":(255,20,20),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-100,self.surface.get_height()/2+75),
+                    "textSize" : 20
+                    }
+
+            }
+        
+
+    def renderTexts(self):
+        for text in self.texts:
+            if text == "Error":
+                if self.error == False:
+                    continue
+                else:
+                    pass
+            font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
+            rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
+            self.surface.blit(rendertext,(self.texts[text]["position"]))
+            
+                
+
+    
+    
+        
+    def eventHandler(self,info):
+        for button in self.buttons:
+            checker = self.buttons[button].eventHandler(info)
+            if checker != None:
+                return checker
+            
+
+
+    def renderSlidingBackground(self):
+        for i in range(0,len(self.backgroundX)):
+            if self.backgroundX[i] <= -120:
+                self.backgroundX[i] = self.surface.get_width() + 120
+            for j in range(0,(self.surface.get_height()+120),120):
+                
+                self.surface.blit(self.background,(self.backgroundX[i],j))
+                
+            self.backgroundX[i] -= 1
+
+
+
+    def renderButtons(self):
+        for button in self.buttons:
+            self.buttons[button].render()
+    
+    def render(self):
+        self.renderSlidingBackground()
+        s = pg.Surface((self.surface.get_width()-200,self.surface.get_height()-200))
+        s.set_alpha(220)                
+        s.fill((0,0,0))
+        self.surface.blit(s,(100,100))
+        self.renderTexts()
+
+        self.renderButtons()
+
+    def main(self,info):
+        checker = self.eventHandler(info)
+        if checker != None:
+            if checker == "Apply":
+                if self.buttons["Volume"].text.isnumeric():
+                    if int(self.buttons["Volume"].text) > 100 or int(self.buttons["Volume"].text) < 0:
+                        self.error = True
+                    else:
+                        self.error = False
+                        self.config["Settings"]["Volume"] = self.buttons["Volume"].text
+                        with open("settings.ini","w") as f:
+                            self.config.write(f)
+                        return "Menu"
+            else:
+                return checker
+        self.render()
+
+
+class Credits(Menu):
+    def __init__(self,surface):
+        super().__init__(surface)
+        self.surface = surface
+        self.backgroundX = []
+        self.buttons = {}
+        self.buttons["Back"] = MenuButton(self.surface,((150,150)),(200,50),"Back","Menu")
+
+        for i in range(-120,self.surface.get_width()+120,120):
+            self.backgroundX.append(i)
+
+        self.texts = {
+            "Name1" : {
+                    "text":"By Yusuf Tagari 13.4",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-150,150),
+                    "textSize" : 30
+                },
+            "Name2" : {
+                    "text":"Wanstead High School",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-150,250),
+                    "textSize" : 30
+                },
+            "Name4" : {
+                    "text":"Built with Python and Pygame",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-150,450),
+                    "textSize" : 30
+                },
+            "Name5" : {
+                    "text":"For the A Level Computer Science Coursework",
+                    "textColour":(255,255,255),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-150,550),
+                    "textSize" : 30
+                }
+        }
+
+    def renderTexts(self):
+        for text in self.texts:
+            font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
+            rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
+            self.surface.blit(rendertext,(self.texts[text]["position"]))
+    
+    def renderButtons(self):
+        super().renderButtons()
+    
+    def renderSlidingBackground(self):
+        return super().renderSlidingBackground()
+    
+    def render(self):
+        self.renderSlidingBackground()
+        s = pg.Surface((self.surface.get_width()-200,self.surface.get_height()-200))
+        s.set_alpha(220)                
+        s.fill((0,0,0))
+        self.surface.blit(s,(100,100))
+        self.renderTexts()
+        self.renderButtons()
+    
+    def eventHandler(self,info):
+        return super().eventHandler(info)
+    
+    def main(self,info):
+        checker = self.eventHandler(info)
+        if checker != None:
+            return checker
+        self.render()
+

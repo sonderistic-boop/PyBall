@@ -36,6 +36,13 @@ class collidingGoal(pg.sprite.Sprite):
         self.restitution = 0.5
         self.damping = 0
 
+        self.vertices = [
+            (self.position[0],self.position[1]),
+            (self.position[0]+self.size[0],self.position[1]),
+            (self.position[0]+self.size[0],self.position[1]+self.size[1]),
+            (self.position[0],self.position[1]+self.size[1])
+        ]
+
 
         self.image = pg.Surface((self.size[0],self.size[1]),pg.SRCALPHA)
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))

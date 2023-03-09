@@ -105,8 +105,7 @@ class smallStadium(Stadium):
         }
         
 
-        print(self.lines["top"].startPosition)
-        print(self.lines["top"].bounds["y1"])
+        
         self.collidingGoals = {
     
             "left": collidingGoal(self.screen,(self.bounds["x1"]-79,self.bounds["y3"]),self.bounds["goalheight"],self.teams[0],"left"),

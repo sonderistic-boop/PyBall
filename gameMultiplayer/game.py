@@ -175,19 +175,18 @@ class Game():
 
         playerPlayerCollisions = pg.sprite.groupcollide(self.playerGroup,self.playerGroup,False,False,pg.sprite.collide_mask)
 
+        
 
         for i in ballGoalCollisions:
             if self.gameState == "game":
                 self.goalScored(i)
 
 
-        for i in ballStadiumCollisions:
-            if i.collidesWith["ball"]:
-                print("hit")
-                physics.objectCollision(i,self.ball,col.circleQuadManifold(i,self.ball))
-
+        
+        self.wallCollision(self.ball,self.stadium)
+            
+        
         for i in ballPlayerCollisions:
-
             
             if i.kicking:
                 i.kicking = False
@@ -212,8 +211,59 @@ class Game():
         """
         
         
-        #for i in ballStadiumCollisions:
         
+    
+
+    def wallCollision(self,ball,stadium):
+        # if the ball collides with the stadium, bounce it off the stadium
+        
+        restitution = lambda a : a* 0.8
+        
+        if ball.position[0] < stadium.bounds["x1"] and (ball.position[1] < stadium.bounds["y3"] or ball.position[1] + ball.h > stadium.bounds["y4"]):
+            ball.position[0] = stadium.bounds["x1"]
+            ball.velocity[0] *= -1
+            #ball.velocity = restitution(ball.velocity)
+            
+            
+        elif ball.position[0]+ball.w > stadium.bounds["x2"] and (ball.position[1] < stadium.bounds["y3"] or ball.position[1] + ball.h > stadium.bounds["y4"]):
+            ball.position[0] = stadium.bounds["x2"] - ball.w
+            ball.velocity[0] *= -1
+            ball.velocity = restitution(ball.velocity)
+            
+        elif ball.position[1] < stadium.bounds["y1"]:
+            ball.position[1] = stadium.bounds["y1"]
+            ball.velocity[1] *= -1
+            ball.velocity = restitution(ball.velocity)
+            
+        elif ball.position[1] + ball.h > stadium.bounds["y2"]:
+            ball.position[1] = stadium.bounds["y2"] - ball.h
+            ball.velocity[1] *= -1
+            ball.velocity = restitution(ball.velocity)
+            
+        elif ball.position[0] < stadium.bounds["x1"] - 79:
+            ball.velocity[0] *= -1
+            ball.velocity = restitution(ball.velocity)
+            
+        elif ball.position[1] + ball.w > stadium.bounds["x2"] + 79:
+            
+            ball.velocity[0] *= -1
+            ball.velocity = restitution(ball.velocity)
+            
+        elif ball.position[1] < stadium.bounds["y3"] and (ball.position[0] < stadium.bounds["x1"] or ball.position[1] + ball.w > stadium.bounds["x2"]):
+            
+            ball.velocity[1] *= -1
+            ball.velocity = restitution(ball.velocity)
+            
+        elif (ball.position[1] + ball.h > stadium.bounds["y4"]) and (ball.position[0] < stadium.bounds["x1"] or ball.position[1] + ball.w > stadium.bounds["x2"]):
+            
+            ball.velocity[1] *= -1
+            ball.velocity = restitution(ball.velocity)
+        
+#SOME REASON COLLISIONS WITH THE X2 GOAL AREN'T WORKING AS INTENDED, FIX THIS
+        
+
+        
+
     def goalScored(self,goal):
         
         if goal.team == self.colours["team1"]:

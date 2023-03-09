@@ -77,6 +77,7 @@ class pyBallServer:
         
         
         
+        
         sendingData = {"gameSettings" : self.gameSettings,
                        "players" : self.players
                       }
@@ -110,11 +111,14 @@ class pyBallServer:
                         break
                     print(receivingData)
                     print(data)
+
                     if receivingData["team"] != data["team"]:
                         #change has occured in players selected team, rectify by deleting record of player in previous team and adding to new team
                         N = (self.players[(data["team"])][str(player)]).copy()
                         del self.players[(data["team"])][str(player)]
                         self.players[(receivingData["team"])][str(player)] = N
+                    
+                    
 
                     #additional checks, if player is an admin, if they made any changes to server
 
@@ -164,11 +168,15 @@ class pyBallServer:
                     sendingData = {"gameData" : self.game.getData(),
                                    "transferMode" : self.transferMode
                                      }
+                    if self.transferMode == "lobby":
+                        self.data = {"team" : "neutral"}
+                        self.transferMode = "lobby"
                     sendingDataLoad = pickle.dumps(sendingData)
 
                     connection.send(sendingDataLoad)
                     if self.transferMode == "lobby":
                         self.data = {"team" : "neutral"} 
+                        
             clientClock.tick(60)
                         
  

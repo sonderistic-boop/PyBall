@@ -55,4 +55,17 @@ def circleQuadManifold(obj1,obj2):
         else:
             return pg.Vector2(0,1)
 
+
+
+
+def closestPointRect(rectangle,circle):
     
+    closestPoint = pg.math.Vector2(pg.math.clamp(circle.position[0]+circle.w,rectangle.bounds["x1"],rectangle.bounds["x2"]),pg.math.clamp(circle.position[1]+circle.h,rectangle.bounds["y1"],rectangle.bounds["y2"]))
+    #print("bounds of rect",rectangle.bounds)
+    #print("closest point",closestPoint)
+    #print("circle position",circle.position)
+
+    normalVector = closestPoint-(circle.position+pg.math.Vector2(circle.w,circle.h))
+    if normalVector!=pg.math.Vector2(0,0):
+        normalVector = normalVector.normalize()
+    return normalVector
