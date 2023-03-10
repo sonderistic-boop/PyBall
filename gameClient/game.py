@@ -16,11 +16,13 @@ from shared.themeColours import *
 
 
 class Game():
+    # this class is used to manage the game on the client side
     def __init__(self,parentScreen,players,gameSettings,username):
         self.size = (1600,950)
         #declares the parent screen, which is the screen that the game surface will be drawn on
         self.parentScreen = parentScreen
         #declares which stadium the game will be played on
+        # gets all information from the server to construct the game class
         self.stadium = gameSettings["stadium"]
         self.username = username
         self.gameState = "gameStart"
@@ -33,7 +35,7 @@ class Game():
             "team1" : "red",
             "team2" : "blue"
         }
-
+        # texts that can be displayed on the screen when an action occurs
         self.texts = {
             "goalTeam1" : {
                 "text" : "GOAL! RED TEAM SCORES!",
@@ -152,6 +154,7 @@ class Game():
     #main function, takes the receivingData as a parameter, and then renders the items based on this
     # another function as well, getData() which getData() returns the position of the isMe player.
     def getData(self,info):
+        #get the position of the player, and the direction of movement, and the kick action from the info dictionary
         data = {}
         data["actions"] = {
             "direction" : (0,0),
@@ -201,6 +204,7 @@ class Game():
          
         
     def update(self,receivingData):
+        # update the game state, and then update the positions of the players, and the ball with the data from the server
 
         #update positions of every object
         #update the ball

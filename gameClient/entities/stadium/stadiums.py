@@ -9,7 +9,9 @@ tiles = {
     
 }
 class Stadium():
+    # This class is used to manage the stadium
     def __init__(self,screen,position,size):
+        # This function is used to initialise the stadium
 
 
         self.screen = screen
@@ -26,7 +28,7 @@ class Stadium():
         self.collidingGoals = {}
         self.goals = {}
         self.arcs = {}
-
+        # Bounds
         self.bounds = {
          "x1" : self.position[0],
          "x2" : self.position[0]+self.size[0],
@@ -73,6 +75,7 @@ class Stadium():
             
             
     def stamping(self):
+        # This function is used to stamp the tiles
         for i in range(self.bounds["x1"],self.bounds["x2"],300):
             for j in range(self.bounds["y1"],self.bounds["y2"],300):
                 self.screen.blit(self.tile,(i,j))
@@ -83,6 +86,8 @@ class Stadium():
 
 
 class smallStadium(Stadium):
+    # This class is used to construct a small stadium
+    # it is 24 pawns wide and inherits from the stadium class
     
 
     def __init__(self,screen,position,teams):
@@ -111,12 +116,13 @@ class smallStadium(Stadium):
 
         print(self.lines["top"].startPosition)
         print(self.lines["top"].bounds["y1"])
+        # the goals that can be collided with in the stadium
         self.collidingGoals = {
     
             "left": collidingGoal(self.screen,(self.bounds["x1"]-79,self.bounds["y3"]),self.bounds["goalheight"],self.teams[0],"left"),
             "right": collidingGoal(self.screen,(self.bounds["x2"]-15,self.bounds["y3"]),self.bounds["goalheight"],self.teams[1],"right")
         }
-    
+        # This is the goals for the stadium
         self.goals = {
             "left": Goal(self.screen,(self.bounds["x1"]-2,self.bounds["y3"]),(self.bounds["x1"]+2,self.bounds["y4"]),self.teams[0]),
             "right": Goal(self.screen,(self.bounds["x2"]-2,self.bounds["y3"]),(self.bounds["x2"]+2,self.bounds["y4"]),self.teams[1])

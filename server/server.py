@@ -14,10 +14,12 @@ from network import get_ip
 import gameMultiplayer.game as gameMultiplayer
 
 
-
+# sets up the server class
+# the server class will be used to handle all the networking from the server side
 class pyBallServer:
     
     def __init__(self):
+        # set up the server socket
         
         self.port = 5555
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -46,7 +48,9 @@ class pyBallServer:
         }
        
         #player should have name,address,
-      
+        # tries to bind the server socket to the server IP and port
+        # if the binding is successful, then the server will be started
+        # if the binding is unsuccessful, then the server will not be started
         try:
             self.serverSocket.bind((self.serverIP, self.port))
         except socket.error as e:
@@ -63,7 +67,8 @@ class pyBallServer:
 
    
 
-
+    # this function will be used to handle the connections from the clients
+    # it threads the connections so that multiple clients can connect at the same time
     def newClient(self,connection, address):
         clientClock = pg.time.Clock()
         
@@ -90,10 +95,10 @@ class pyBallServer:
         #start transferring in gamestyle synchronous transmission, containing gameState, score, time remaining, and positions of ball and player
 
         
-        
+        # if the client sends data, then the server will send the data back to the client
         while True:
             
-            
+            # if the client sends data, then the server will send the data back to the client
             match self.transferMode:
                 
                 case "lobby":
@@ -121,7 +126,7 @@ class pyBallServer:
                     
 
                     #additional checks, if player is an admin, if they made any changes to server
-
+                    # if they did, then update the server
                     if adminPrivilege:
                         if "gameSettings" in receivingData:
                             if receivingData["gameSettings"] != self.gameSettings:
@@ -137,23 +142,25 @@ class pyBallServer:
 
 
 
-
+                    # update the data which can be compared to the next data received
                     data = receivingData.copy()
 
                     #new initial data
                     if self.transferMode != None:
+                        #if transferMode is not none, then send the gameData
                         sendingData["gameSettings"] = self.gameSettings
                         sendingData["players"] = self.players
                     if self.transferMode == "game":
+                        #if transferMode is game, then send the gameData
                         sendingData["gameData"] = self.game.getData()
                         sendingData["transferMode"] = self.transferMode
                     sendingDataLoad = pickle.dumps(sendingData)
                     connection.send(sendingDataLoad)
                     #send data
                     
-                    
+                
                 case "game":
-                    #if game, then try and receuve
+                    #if game, then try and receuve 
                     try:
                         receivingDataLoad = connection.recv(4096)
                         receivingData = pickle.loads(receivingDataLoad) 
@@ -182,6 +189,7 @@ class pyBallServer:
  
         print("Lost connection")
         print("deleting", player)
+        #delete player from all dictionaries
 
         try:
             del self.players[data["team"]][str(player)]
@@ -208,6 +216,7 @@ class pyBallServer:
 
 
     def connectionChecker(self):
+        # this function will be used to check for new connections
         
         while True:
             connection, address = self.serverSocket.accept()
@@ -229,6 +238,7 @@ server = pyBallServer()
 serverclock = pg.time.Clock()
 start_new_thread(server.connectionChecker, ())
 while True:
+    # if the server is not in the game transfer mode, then the server will not be sending data to the clients
     server.gameBuffer = False
     
     if server.transferMode == "lobby":

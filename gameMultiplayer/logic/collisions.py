@@ -1,5 +1,5 @@
 import pygame as pg
-
+# determiens the manifold of two objects if they are both rectangles
 def quadManifold(obj1,obj2):
     distanceVector = pg.Vector2(obj2.bounds["x1"],obj2.bounds["y1"])-pg.Vector2(obj1.bounds["x1"],obj1.bounds["y1"])
 
@@ -27,7 +27,7 @@ def quadManifold(obj1,obj2):
 
 
 
-
+# determines the manifold of two objects if one is a circle and the other is a rectangle
 
 def circleQuadManifold(obj1,obj2):
     #obj2 is circle in this case
@@ -56,7 +56,7 @@ def circleQuadManifold(obj1,obj2):
             return pg.Vector2(0,1)
 
 
-
+# determines the closest point on a rectangle to a circle
 
 def closestPointRect(rectangle,circle):
     

@@ -7,7 +7,7 @@ import pygame as pg
 import math
 import sys
 
-
+# imports all the files that are needed to run the game
 import gameMultiplayer.logic.physics as physics
 import gameMultiplayer.logic.collisions as col
 from gameMultiplayer.entities.pawn import Pawn
@@ -17,6 +17,7 @@ import gameMultiplayer.entities.stadium.stadiums as stadiums
 
 class Game():
     def __init__(self,players,time,maxScore,stadium):
+        # gets all information from the server to construct the game class
 
         pg.init()
         
@@ -27,6 +28,7 @@ class Game():
         self.gameState = "game"
 
         #numerous game states, "gameStart","game","goalScored","gameEnd"
+        # events that will be used to trigger timers
         self.gameTimerEvent = pg.USEREVENT+1
         self.goalTimerEvent = pg.USEREVENT+2
         self.gameEndTimerEvent = pg.USEREVENT+3
@@ -213,7 +215,7 @@ class Game():
         
         
     
-
+    # 
     def wallCollision(self,ball,stadium):
         # if the ball collides with the stadium, bounce it off the stadium
         
@@ -259,12 +261,14 @@ class Game():
             ball.velocity[1] *= -1
             ball.velocity = restitution(ball.velocity)
         
-#SOME REASON COLLISIONS WITH THE X2 GOAL AREN'T WORKING AS INTENDED, FIX THIS
+#SOME REASON COLLISIONS WITH THE X2 GOAL AREN'T WORKING AS INTENDED, FIX THIS -- fixed
         
 
         
-
+    
     def goalScored(self,goal):
+        # if a goal is scored, update the score, and check if the game has ended
+        # also change the game state to reflect the goal scored
         
         if goal.team == self.colours["team1"]:
             self.team2Score += 1
@@ -284,6 +288,7 @@ class Game():
         pg.time.set_timer(self.goalTimerEvent,5000)
 
     def gameEnd(self):
+        # if the game has ended, change the game state to reflect the winner
         if self.team1Score > self.team2Score:
             self.gameState = "gameEndTeam1"
         elif self.team1Score < self.team2Score:
@@ -293,11 +298,13 @@ class Game():
         pg.time.set_timer(self.gameEndTimerEvent,5000)
 
     def reset(self):
+        # reset the game positions of entities such as the ball and players
         self.ball.reset()
         for i in self.playerGroup:
             i.reset()
 
     def getData(self):
+        # returns a dictionary of the game data, including the game state, ball data, player data, score and time remaining
         data = {
             "gameState" : self.gameState,
             "ball" : self.ball.getData(),
@@ -318,7 +325,7 @@ class Game():
             data["players"]["team2"][i] = self.team2[i].getData()
 
         return data
-    
+    # updates the players in the game
     def updatePlayer(self,username,ReceivingClientData):
         if username in self.team1:
             self.team1[username].update(ReceivingClientData)

@@ -18,21 +18,21 @@ def objectCollision(obj1,obj2,normalVector = None):
     normalVelocity = relativeVelocity.dot(normalVector)
 
 
-    
+    # if the objects are moving away from each other, then do nothing
     if(normalVelocity > 0) and ((obj1.staticValue == True) and (obj2.staticValue == True)):
         return
-    
+    # finds the restitution of the collision, use the lowest restitution of the two objects
     e = min(obj1.restitution,obj2.restitution)
-
-    j = -(1+e) * normalVelocity / (obj1.inverseMass + obj2.inverseMass)
-
-    impulse = normalVector * j
-
+    # finds the impulse of the collision
+    acc = -(1+e) * normalVelocity / (obj1.inverseMass + obj2.inverseMass)
+    
+    impulse = normalVector * acc
+    # apply the impulse to the objects
     if obj1.staticValue:
         obj1.velocity -= impulse * (obj1.inverseMass)
     if obj2.staticValue:
         obj2.velocity += impulse * (obj2.inverseMass)
-    #floating_error(obj1,obj2,normalVector)
+    floating_error(obj1,obj2,normalVector)
 
 
 
@@ -51,6 +51,7 @@ def thrust(obj1,obj2):
 
 
 def floating_error(obj1,obj2,normalVector):
+    # correct the floating error that can be caused when two objects collide
 
     magnitude = normalVector.magnitude()
     if hasattr(obj2,"radius"):
@@ -62,8 +63,10 @@ def floating_error(obj1,obj2,normalVector):
     allowance = 0.01
   
     correction = max(penetrationDepth - slack, 0 ) / (obj1.inverseMass + obj2.inverseMass) * allowance * normalVector
-    obj1.position -= obj1.inverseMass * correction
-    obj2.position += obj2.inverseMass * correction
+    if obj1.staticValue:
+        obj1.position -= obj1.inverseMass * correction
+    if obj2.staticValue:
+        obj2.position += obj2.inverseMass * correction
 
 
 

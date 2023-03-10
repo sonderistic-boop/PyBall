@@ -25,12 +25,12 @@ soundManager = SoundManager()
 
 # set up the main function for the game
 # the main function will be used to run the game
-
+# OBJECTIVE 1.1 - CREATING A SUITABLE ENVIRONMENT TO RUN THE CODE
 def main():
     # set running as True
     # running indicates whether the game is running or not
     # if running is False, then the game will be closed
-
+    # if running is True, then the game will be running
     running = True
     config = configparser.ConfigParser()
     

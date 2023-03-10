@@ -2,6 +2,7 @@ import pygame as pg
 
 #set up a button class
 class Button:
+    # set up the constructor for the button class
     def __init__(self,surface,pos,size,colour = (155,155,155,255),textColour = (255,255,255,255)):
         self.surface = surface
         self.position = pos
@@ -14,7 +15,7 @@ class Button:
         self.image = pg.Surface((self.size[0],self.size[1]),pg.SRCALPHA)
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
         
-
+    # set up the render function for the button class
     def render(self):
         
 
@@ -67,6 +68,7 @@ class Button:
 
 
 class MenuButton(Button):
+    # set up the constructor for the button class for menu buttons
     def __init__(self,surface,pos,size,text,redirect):
         super().__init__(surface,pos,size,(51,102,0,255),(255,255,255,255))
         self.text = text
@@ -76,9 +78,11 @@ class MenuButton(Button):
 
         
     def eventHandler(self,info):
+        # if the mouse is in the button, then run the onHover function
         if self.rect.collidepoint((info["mouse"])):
             self.onHover()
             for event in info["events"]:
+                # if the mouse is clicked and the mouse is in the button, then run the onClick function
                 
                 match event.type:
                     case pg.MOUSEBUTTONDOWN:
@@ -115,12 +119,15 @@ class InputButton(Button):
             for event in info["events"]:
                 match event.type:
                     case pg.MOUSEBUTTONDOWN:
+                        # if the mouse is clicked and the mouse is in the button, then run the onClick function
                         #if mouse click and mouseposition in rect
                         self.onClick(info)
 
                     case pg.KEYDOWN:
                         if self.trigger:
+                            # if the key is backspace, then remove the last character from the text
                             if event.key == pg.K_RETURN:
+                                # if the key is enter, then run the onTriggerExit function
                                 self.trigger = False
                                 self.onTriggerExit()
                             elif event.key == pg.K_BACKSPACE:
@@ -129,6 +136,7 @@ class InputButton(Button):
                                 self.text += event.unicode
 
     def onClick(self,info):
+        # if the mouse is in the button, then run the onHover function
         if self.rect.collidepoint(info["mouse"]):
              if self.trigger == False:
                 self.trigger = True
@@ -201,6 +209,7 @@ class DropdownButton(Button):
 
 
 class ListButton(Button):
+    # set up the constructor for the button class for list buttons
     def __init__(self,surface,pos,size,list):
         super().__init__(surface,pos,size,(150,150,150,255))
         self.borderColour = (0,0,0,150)
@@ -211,7 +220,7 @@ class ListButton(Button):
         
 
         
-
+        # list buttons contain a list of buttons, which are the items in the list, typically the names of players
 
 
         self.textColour = (255,255,255,255)
@@ -244,6 +253,7 @@ class ListButton(Button):
         
 
     def updateItems(self,newList):
+        # if the list of items has changed, then update the list of buttons
         
         if list(newList.keys()) != list(self.list.keys()):
             
@@ -258,14 +268,17 @@ class ListButton(Button):
             self.list[item].position = (self.position[0],self.position[1]+(index*self.list[item].size[1]))
             self.list[item].rect = self.list[item].image.get_rect(topleft = (self.list[item].position[0],self.list[item].position[1]))
     def removeItem(self,item):
+        # if the item is in the list, then remove it
         if item in self.list:
             self.list.pop(item)
     
     def addItem(self,item):
+        # if the item is not in the list, then add it
         if item not in self.list:
             self.list[item] = ListItemButton(self.surface,(self.position[0],self.position[1]+(len(self.list)*25)),(self.size[0],25),item)
     
     def transferItem(self,item,destinationList):
+        # if the item is in the list, then remove it and add it to the destination list
         if item in self.list:
             self.removeItem(item)
             destinationList.addItem(item)
@@ -277,12 +290,14 @@ class ListButton(Button):
 
 
 class ListItemButton(Button):
+    # set up the constructor for the button class for list buttons
     def __init__(self,surface,pos,size,text):
         super().__init__(surface,pos,size,(180,180,180,255))
         self.text = text
         self.trigger = False
 
     def eventHandler(self,info,lists):
+        # if the trigger is on, then the item can be moved to another list
         if self.trigger == False:
             if self.rect.collidepoint((info["mouse"])):
                 
@@ -367,6 +382,7 @@ class ListItemButton(Button):
     
 
 class InfoButton(Button):
+    # this  button can display information given to it
     def __init__(self,surface,pos,size,info):
         super().__init__(surface,pos,size,(100,100,100,255))
         self.info = info

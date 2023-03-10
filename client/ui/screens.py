@@ -8,11 +8,12 @@ from client.ui.button import *
 from shared.themeColours import *
 # set up a menu class, with a themeColours green background, and a join server, host server, settings, credits, and exit button
 
-
+# OBJECTIVE 4.1 - CREATING A MENU SYSTEM WHICH ALLOWS THE USER TO NAVIGATE THROUGH THE GAME
+# OBJECTIVE 4.2 - CREATING CLASS INHERITANCE TO ALLOW FOR EASIER CODE MAINTENANCE
 class Menu:
     def __init__(self,surface):
         
-        
+        # set up the surface
         self.surface = surface
         self.background = pg.transform.scale((pg.image.load("./shared/assets/background/background.png")),(120,120))
         self.logo = pg.image.load("./shared/assets/background/pyballlogo.png")
@@ -20,13 +21,13 @@ class Menu:
         
        
 
-        
+        # set up the background
         for i in range(-120,self.surface.get_width()+120,120):
             self.backgroundX.append(i)
         
         
         
-        
+        # set up the buttons
         self.buttons = {}
         self.buttons["Join Game"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),300),(200,50),"Join Game","JoinGame")
         self.buttons["Host Game"] = MenuButton(self.surface,(((self.surface.get_width()/2)-100),400),(200,50),"Host Game","HostGame")
@@ -38,7 +39,7 @@ class Menu:
     
     
         
-    
+    # event handler for the menu
     def eventHandler(self,info):
         for button in self.buttons:
             checker = self.buttons[button].eventHandler(info)
@@ -46,8 +47,8 @@ class Menu:
                 return checker
 
 
-
-
+    
+    # render the background
     def renderSlidingBackground(self):
         for i in range(0,len(self.backgroundX)):
             if self.backgroundX[i] <= -120:
@@ -58,7 +59,7 @@ class Menu:
                 
             self.backgroundX[i] -= 1
 
-
+    # render the logo
       
     def renderLogo(self):
         self.surface.blit(self.logo,(((self.surface.get_width()/2)-(self.logo.get_width()/2)),100))
@@ -139,6 +140,7 @@ class JoinGame(Menu):
     
         
     def eventHandler(self,info):
+        # if a button is pressed, return the button's name, which returns the name of the next screen
         for button in self.buttons:
             checker = self.buttons[button].eventHandler(info)
             if checker != None:
@@ -200,8 +202,7 @@ class JoinGame(Menu):
 
 
 
-
-
+# CREATES THE GAME LOBBY
 class GameLobby(Menu):
     def __init__(self,surface,clientSettings,ip):
         super().__init__(surface)
@@ -516,6 +517,7 @@ class Disconnect(Menu):
     
 
 class ScoreBoard:
+    # This class is used to display the score board, as a UI element
     def __init__(self,surface,position,gameSettings):
         self.surface = surface
         self.screen = pg.surface.Surface((self.surface.get_width(),50))
@@ -589,6 +591,7 @@ class Settings(Menu):
         super().__init__(surface)
         self.surface = surface
         self.backgroundX = []
+        # sets up the config file to be read
         self.config = configparser.ConfigParser()
     
         self.config.read("./settings.ini")
@@ -681,6 +684,7 @@ class Settings(Menu):
         checker = self.eventHandler(info)
         if checker != None:
             if checker == "Apply":
+                # checks if the input is a number and if it is between 0 and 100
                 if self.buttons["Volume"].text.isnumeric():
                     if int(self.buttons["Volume"].text) > 100 or int(self.buttons["Volume"].text) < 0:
                         self.error = True
@@ -696,6 +700,7 @@ class Settings(Menu):
 
 
 class Credits(Menu):
+    # this is the credits menu
     def __init__(self,surface):
         super().__init__(surface)
         self.surface = surface

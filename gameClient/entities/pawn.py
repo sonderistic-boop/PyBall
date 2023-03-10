@@ -9,6 +9,7 @@ from shared.themeColours import themeColours
 
 #ball is two thirds the size of the player
 class Pawn(pg.sprite.Sprite):
+    # OBJECTIVE 1.3 - CREATING CLASSES FOR ENTITIES IN THE GAME
     def __init__(self,name,team,isPlayer,surface,position,size):
 
         #inherits from sprite class, assigns all variables declared at initialisation
@@ -44,6 +45,7 @@ class Pawn(pg.sprite.Sprite):
 
     #renders the pawn, and updates the mask, if the pawn is the player, a circle is drawn around the pawn
     def render(self):
+        
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
 
         self.renderGraphics()
@@ -63,7 +65,7 @@ class Pawn(pg.sprite.Sprite):
         pg.draw.circle(self.image,self.colour,(self.h//2,self.h//2),(0.55*(self.w//2)))
     
     def update(self,receivingData):
-        
+        # updates the pawn's position and whether its kicking with the data received from the server
         
         self.kicking = receivingData["kicking"]
         

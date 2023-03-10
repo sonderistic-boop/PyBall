@@ -3,11 +3,14 @@ import pickle
 
 
 class Network:
+    # OBJECTIVE 3.1 - CREATING A NETWORK CLASS TO HANDLE ALL NETWORKING 
     def __init__(self,serverIp,port,initialData):
+        # sets up the socket and connects to the server
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serverIp = serverIp
         self.port = 5555
         self.address = (self.serverIp, self.port)
+        # sets up the initial data, which is the data that is sent from the server when the client connects
         self.initialData = self.initialConnect(initialData)
         print(self.initialData)
 
@@ -15,6 +18,7 @@ class Network:
         return self.initialData
 
     def initialConnect(self,data):
+        # connects to the server and sends the initial data
         try:
             
             self.client.connect(self.address)
@@ -25,6 +29,7 @@ class Network:
             pass
 
     def sendData(self, data):
+        # sends data to the server
         try:
             self.client.send(pickle.dumps(data))
             return pickle.loads(self.client.recv(4096))
