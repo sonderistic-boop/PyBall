@@ -244,7 +244,7 @@ class Game():
             ball.velocity[0] *= -1
             ball.velocity = restitution(ball.velocity)
             
-        elif ball.position[1] + ball.w > stadium.bounds["x2"] + 79:
+        elif ball.position[0] + ball.w > stadium.bounds["x2"] + 79:
             
             ball.velocity[0] *= -1
             ball.velocity = restitution(ball.velocity)
