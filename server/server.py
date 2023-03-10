@@ -240,6 +240,8 @@ while True:
             match checker:
                 case "gameOver":
                     server.transferMode = "lobby"
+                    #close server
+                    
         serverclock.tick(60)
         
         
