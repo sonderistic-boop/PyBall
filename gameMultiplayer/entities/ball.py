@@ -38,7 +38,7 @@ class Ball(pg.sprite.Sprite):
         self.inverseMass = 1/self.mass
         self.restitution = 0.5
         self.damping = 0.99
-
+        self.colour = (255,255,255)
 
 
         #assigns the image and rect attributes to the ball
@@ -63,7 +63,7 @@ class Ball(pg.sprite.Sprite):
     #renders the graphics of the ball, the outer circle and the inner circle
     def renderGraphics(self):
         pg.draw.circle(self.image,(0,0,0),(self.w//2,self.h//2),((self.w//2)))
-        pg.draw.circle(self.image,(255,255,255),(self.h//2,self.h//2),(0.915*(self.w//2)))
+        pg.draw.circle(self.image,(self.colour),(self.h//2,self.h//2),(0.915*(self.w//2)))
 
     def updatePhysics(self):
         

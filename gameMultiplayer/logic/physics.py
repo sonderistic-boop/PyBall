@@ -19,7 +19,7 @@ def objectCollision(obj1,obj2,normalVector = None):
 
 
     # if the objects are moving away from each other, then do nothing
-    if(normalVelocity > 0) and ((obj1.staticValue == True) and (obj2.staticValue == True)):
+    if(normalVelocity > 0) and ((obj1.staticValue == False) or (obj2.staticValue == False)):
         return
     # finds the restitution of the collision, use the lowest restitution of the two objects
     e = min(obj1.restitution,obj2.restitution)

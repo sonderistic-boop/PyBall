@@ -173,7 +173,7 @@ class Game():
 
         ballGoalCollisions = pg.sprite.spritecollide(self.ball,self.stadiumGoalGroup,False,pg.sprite.collide_mask)
 
-        playerStadiumCollisions = pg.sprite.groupcollide(self.playerGroup,self.stadiumBoundsGroup,False,pg.sprite.collide_mask)
+        playerStadiumCollisions = pg.sprite.groupcollide(self.playerGroup,self.stadiumBoundsGroup,False,False,pg.sprite.collide_mask)
 
         playerPlayerCollisions = pg.sprite.groupcollide(self.playerGroup,self.playerGroup,False,False,pg.sprite.collide_mask)
 
@@ -186,6 +186,24 @@ class Game():
 
         
         self.wallCollision(self.ball,self.stadium)
+
+        for i in ballStadiumCollisions:
+            if hasattr(i,"circles"):
+                for j in i.circles:
+                    physics.objectCollision(self.ball,i.circles[j])
+                    i.circles[j].position = i.circles[j].initialPosition.copy()
+        
+        for i in playerStadiumCollisions:
+            #loop through the dictionary of collisions and if the player is colliding with a goal which has circles, then check for collisions with the circles
+            for j in playerStadiumCollisions[i]:
+                if hasattr(j,"circles"):
+                    print("yeah")
+                    for k in j.circles:
+                        physics.objectCollision(i,j.circles[k])
+                        j.circles[k].position = j.circles[k].initialPosition.copy()
+                
+            
+                
             
         
         for i in ballPlayerCollisions:

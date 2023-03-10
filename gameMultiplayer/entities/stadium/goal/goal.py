@@ -1,6 +1,7 @@
 #creates a class for the goal
 import pygame as pg
 import pygame.gfxdraw as gfxdraw
+from gameMultiplayer.entities.ball import Ball
 
 themeColours = {
     "red" : "#d14242",
@@ -36,12 +37,14 @@ class collidingGoal(pg.sprite.Sprite):
         self.restitution = 0.5
         self.damping = 0
 
-        self.vertices = [
-            (self.position[0],self.position[1]),
-            (self.position[0]+self.size[0],self.position[1]),
-            (self.position[0]+self.size[0],self.position[1]+self.size[1]),
-            (self.position[0],self.position[1]+self.size[1])
-        ]
+        self.circles = {
+            "top" : Ball(self.surface,(self.position[0] + self.size[0]*self.orientation["left"],self.position[1]),(30,30)),
+            "bottom" : Ball(self.surface,(self.position[0] + self.size[0]* self.orientation["left"],self.position[1]-30),(30,30))
+        }
+        for i in self.circles:
+            self.circles[i].staticValue = False
+            self.circles[i].colour = self.colour
+            self.circles[i].mass = 10000000
 
 
         self.image = pg.Surface((self.size[0],self.size[1]),pg.SRCALPHA)
@@ -56,6 +59,7 @@ class collidingGoal(pg.sprite.Sprite):
         self.image.fill((0,0,0,0))
         
         self.renderGraphics()
+        self.renderCircles()
 
         self.image = pg.transform.flip(self.image,self.orientation["left"],False)
         
@@ -72,6 +76,11 @@ class collidingGoal(pg.sprite.Sprite):
         pg.draw.circle(self.image,(self.colour),(15,15),(0.915*15))
         pg.draw.circle(self.image,(0,0,0),(15,self.size[1]-15),((15)))
         pg.draw.circle(self.image,(self.colour),(15,self.size[1]-15),(0.915*15))
+    
+    def renderCircles(self):
+        for i in self.circles:
+            self.circles[i].render()
+
 
 
     
