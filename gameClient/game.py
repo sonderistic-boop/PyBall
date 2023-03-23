@@ -1,8 +1,7 @@
 #make game class, with a run method, and a main method
-#game should be 810x770
+#game should be 810x770 -- deprecated
 #game will have a stadium, a ball, and two teams
-#game will have a run method, which will run the game
-#game 
+#game will have a run method, which will run the game 
 import pygame as pg
 import math
 import sys

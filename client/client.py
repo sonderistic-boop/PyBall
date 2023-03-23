@@ -90,7 +90,7 @@ class Client:
 
 
                 case "game":
-                    #data transfer shenanigans
+                    #data transferrance, send the server the direction the player wishes to move in, and receive the game data in return. This will then be used to draw the game
                     self.sendingData = self.current.getData(info)
                     print("sending data: ",self.sendingData)
                     ReceivingDataLoad = self.networkInterface.sendData(self.sendingData)

@@ -1,8 +1,8 @@
 #make game class, with a run method, and a main method
-#game should be 810x770
+#game should be 810x770 -- Deprecated
 #game will have a stadium, a ball, and two teams
 #game will have a run method, which will run the game
-#game 
+#game will differ from the client game class, in that it will not have a scoreboard, and will include specific server side calculations for physics, collisions, and scoring etc.
 import pygame as pg
 import math
 import sys
@@ -70,6 +70,8 @@ class Game():
         
         
         self.ball = Ball(self.screen,(self.stadium.bounds["middle"][0],self.stadium.bounds["middle"][1]),(30,30))
+        self.ball.initialPosition = pg.math.Vector2(self.stadium.bounds["middle"][0]-self.ball.rect.width//2,self.stadium.bounds["middle"][1]-self.ball.rect.height//2)
+        self.ball.position = self.ball.initialPosition.copy()
         
         #load players, and add them to the left and right team dictionaries. initial position will be the middle-left of the stadium for the left team, and the middle-right of the stadium for the right team
         for index,player in enumerate(players["team1"]):

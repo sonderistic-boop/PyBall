@@ -36,12 +36,13 @@ class collidingGoal(pg.sprite.Sprite):
         self.inverseMass = 1/self.mass
         self.restitution = 0.5
         self.damping = 0
-
+        # creates the circles for the goal, if the ball hits the circles, it will bounce off
         self.circles = {
             "top" : Ball(self.surface,(self.position[0] + self.size[0]*self.orientation["left"],self.position[1]),(30,30)),
             "bottom" : Ball(self.surface,(self.position[0] + self.size[0]* self.orientation["left"],self.position[1]-30),(30,30))
         }
         for i in self.circles:
+            # makes the circles static, so they don't move
             self.circles[i].staticValue = False
             self.circles[i].colour = self.colour
             self.circles[i].mass = 10000000
@@ -55,12 +56,13 @@ class collidingGoal(pg.sprite.Sprite):
     
 
     def render(self):
+        # renders the goal
         self.rect = self.image.get_rect(topleft = (self.position[0],self.position[1]))
         self.image.fill((0,0,0,0))
         
         self.renderGraphics()
         self.renderCircles()
-
+        # flips the goal if it is on the right side
         self.image = pg.transform.flip(self.image,self.orientation["left"],False)
         
         
@@ -68,6 +70,7 @@ class collidingGoal(pg.sprite.Sprite):
 
     def renderGraphics(self):
         
+     
         pg.draw.line(self.image,(0,0,0),(19,15),(self.size[0]-8,15),8)
         pg.draw.line(self.image,(0,0,0),(self.size[0]-4,12),(self.size[0]-4,self.size[1]-11),8)
         pg.draw.line(self.image,(0,0,0),(19,self.size[1]-15),(self.size[0]-8,self.size[1]-15),8)

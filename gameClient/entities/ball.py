@@ -31,10 +31,6 @@ class Ball(pg.sprite.Sprite):
         self.radius =  ((self.w//2)**2 + (self.h//2)**2) ** 0.5
 
 
-        #physics variables
-     
-
-
         #assigns the image and rect attributes to the ball
 
         self.image = pg.Surface((self.w,self.h),pg.SRCALPHA)

@@ -30,10 +30,7 @@ class Pawn(pg.sprite.Sprite):
         self.colour = pg.Color(themeColours[team])
 
 
-        #physics variables
-        
-        
-
+       
         #assigns the image and rect attributes to the sprite
 
         self.image = pg.Surface((self.w,self.h),pg.SRCALPHA)
@@ -72,13 +69,6 @@ class Pawn(pg.sprite.Sprite):
         self.position = pg.math.Vector2(receivingData["position"])
 
 
-  
-
-
-    #constrains the velocity of the pawn to the max velocity
- 
-
-    #resets the pawn to its initial position
    
 
 

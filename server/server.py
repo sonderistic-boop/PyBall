@@ -74,6 +74,9 @@ class pyBallServer:
         
         player = connection.recv(4096)
         player = pickle.loads(player)
+        if player in self.players["team1"] or player in self.players["team2"] or player in self.players["neutral"]:
+            connection.close()
+            return
         
         
         self.players["neutral"][str(player)] = {"address": address}

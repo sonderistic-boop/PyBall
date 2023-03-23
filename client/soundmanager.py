@@ -2,6 +2,7 @@ import pygame as pg
 
 class SoundManager:
     # This class is used to manage all the sounds in the game
+    # OBJECTIVE 5.2 - SOUND DESIGN
     def __init__(self):
         self.sounds = {
 
