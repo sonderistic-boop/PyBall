@@ -36,6 +36,7 @@ class Game():
 
         #declares how long the game will last
         self.time = time
+        self.time = 300
         #declares the maximum score the game will be played to
         self.maxScore = maxScore
 

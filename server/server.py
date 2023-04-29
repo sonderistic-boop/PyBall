@@ -121,11 +121,16 @@ class pyBallServer:
                     print(receivingData)
                     print(data)
 
-                    if receivingData["team"] != data["team"]:
-                        #change has occured in players selected team, rectify by deleting record of player in previous team and adding to new team
-                        N = (self.players[(data["team"])][str(player)]).copy()
-                        del self.players[(data["team"])][str(player)]
-                        self.players[(receivingData["team"])][str(player)] = N
+                    try:
+
+                        if receivingData["team"] != data["team"]:
+                            #change has occured in players selected team, rectify by deleting record of player in previous team and adding to new team
+                            N = (self.players[(data["team"])][str(player)]).copy()
+                            del self.players[(data["team"])][str(player)]
+                            self.players[(receivingData["team"])][str(player)] = N
+                    
+                    except:
+                        pass
                     
                     
 
