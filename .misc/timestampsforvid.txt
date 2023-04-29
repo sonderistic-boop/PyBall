@@ -1,0 +1,42 @@
+1 -
+Menu button selection Typical: 00:10
+Menu button selection Erroneous: 00:16
+2 - 
+Volume box selection Typical: 00:20
+Volume box selection Erroneous: 00:28
+Volume box selection Extreme: 00:33
+3 - 
+Volume box input Typical: 00:39
+Volume box input Erroneous: 00:47
+4 - 
+Apply button selection Typical: 00:53
+Apply button selection Extreme: 01:08
+Apply button selection Erroneous: 01:43
+5 - 
+Join Game field selection Typical: 02:07
+Join Game field selection Erroneous: 02:16
+Join Game field selection Extreme: 02:24
+6 - 
+Join Game button selection Typical: 02:31
+Join Game button selection Erroneous: 02:44
+7 - 
+Move player across between teams Typical: 03:13
+Move player across between teams Erroneous: 03:18
+Move player across between teams Extreme: 03:33
+8 - 
+Start Game button selection Typical: 03:39
+9 - 
+Moving player across game environment Typical: 03:48
+Moving player across game environment Extreme: 03:54
+10 - 
+Player kicking ball Typical: 04:00
+Player kicking ball Erroneous: 04:12
+11 - 
+Scoring a goal Typical: 04:20
+Scoring a goal Erroneous: 04:29
+12 - 
+Maximum score reached Typical: 04:48
+13 - 
+Game end due to timeout Typical: 05:03
+Game end due to timeout Extreme: 05:11
+

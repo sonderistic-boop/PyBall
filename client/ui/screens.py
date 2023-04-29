@@ -456,14 +456,29 @@ class Disconnect(Menu):
         self.texts = {
             
             "Disconnect" : {
-                    "text":"You were disconnected, please try again later",
+                    "text":"You were disconnected. Your name may have been taken,",
+                    "textColour":(255,20,20),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-200,self.surface.get_height()/2-30),
+                    "textSize" : 20
+                    },
+            "Disconnect2" : {
+                    "text":"the IP may be incorrect, an error has occured on the hosts end,",
                     "textColour":(255,20,20),
                     "font" : "Arial",
                     "position" : (self.surface.get_width()/2-200,self.surface.get_height()/2),
                     "textSize" : 20
-                    }
-
+                    },
+            "Disconnect3" : {
+                    "text":"or the host has left. Please try again later",
+                    "textColour":(255,20,20),
+                    "font" : "Arial",
+                    "position" : (self.surface.get_width()/2-200,self.surface.get_height()/2+30),
+                    "textSize" : 20
             }
+
+
+        }
         
 
     def renderTexts(self):
@@ -633,10 +648,10 @@ class Settings(Menu):
     def renderTexts(self):
         for text in self.texts:
             if text == "Error":
-                if self.error == False:
-                    continue
+                if self.error == True:
+                  pass
                 else:
-                    pass
+                  continue
             font = pg.font.SysFont(self.texts[text]["font"],self.texts[text]["textSize"])
             rendertext = font.render(self.texts[text]["text"],1,self.texts[text]["textColour"])
             self.surface.blit(rendertext,(self.texts[text]["position"]))
@@ -694,6 +709,8 @@ class Settings(Menu):
                         with open("settings.ini","w") as f:
                             self.config.write(f)
                         return "Menu"
+                else:
+                    self.error = True
             else:
                 return checker
         self.render()
