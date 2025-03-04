@@ -1,7 +1,9 @@
 # PyBall
 Haxball-esque application implemented through python
 
+This is very scuffed and was for A-level Computer Science, not recommended for trying to setup other than for academic curiosity
 
+-----------------------------------------------
 TO DO:
 - make sure  that you seperate "render" and "renderGraphics", using the rect function for render.
 
